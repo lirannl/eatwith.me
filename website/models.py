@@ -1,4 +1,8 @@
-class User: # use the keyword class
+from . import db
+from datetime import datetime
+
+
+class website: # use the keyword class
 
     def __init__(self, name1, email1): #constuct an object of this class
         self.name = name1 # define and access attributes of the class using self.
@@ -16,7 +20,7 @@ class User: # use the keyword class
         s= s.format(self.name, self.email, self.type, self.password_hash)
         return s
 
-    def set_comment(self.comment):
+    def set_comments(self,comment):
         str = 'Name {0}'
         str.format(self.name)
         return str
@@ -27,6 +31,25 @@ class Admin(User): # derived class of User1
         self.type='admin'
         self.privilege=privilege
 
+#class Comment(db.Model):
+#    __tablename__ = 'comments'
+#    id = db.Column(db.Integer, primary_key=True)
+#    text = db.Column(db.DateTime, default=datetime.now())
+#    #add the foreign keys
+#    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+#    website_id = db.Column(db.Interger, db.ForeignKey('website.id'))
+
+#    def __repr__(self):
+#        return "<Comment: {}>".format(self.text)
+   # def __init__(self, user, text, created_at):
+    #    self.user = user
+     #   self.text = text
+      #  self.create_at = created_at
+
+    #def __repr__(self):
+     #   str = 'User {0}, \n Text {1}'
+      #  str.format(self.user, self.text)
+       # return str
 
 
 
@@ -44,17 +67,6 @@ admin_user.set_password('dreamersandme')
 print(normal_user)
 print(admin_user)
 
-
-class Comment:
-    def __init__(self, user, text, created_at):
-        self.user = user
-        self.text = text
-        self.create_at = created_at
-
-    def __repr__(self):
-        str = 'User {0}, \n Text {1}'
-        str.format(self.user, self.text)
-        return str
 
 
 

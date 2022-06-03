@@ -33,15 +33,15 @@ def create_app():
     from .models import User  # importing here to avoid circular references
     @login_manager.user_loader
         def load_user(user_id):
-        return User.query.get(int(user_id))
+        return website.query.get(int(user_id))
 
     # importing views module here to avoid circular references
     # a commonly used practice.
     from . import views
     app.register_blueprint(views.bp)
 
-    from . import #__
-    app.register_blueprint #(__.bp)
+    from . import website
+    app.register_blueprint (website.bp)
 
     from . import auth
     app.register_blueprint(auth.bp)
