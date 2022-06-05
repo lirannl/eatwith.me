@@ -52,10 +52,9 @@ class User:
             .hexdigest() == self.password_hash
 
     def __repr__(self):
-        s = "Name: {0}, type: {2}\n"\
-            .format(self.username, self.user_type)
+        s = "Name: {0}, type: {1}\n"\
+            .format(self.username, self.type)
         return s
-
 
 class Admin(User):  # derived class of User1
     def __init__(self, username, privilege):
@@ -87,6 +86,7 @@ class Event():
     capacity: int = db.Column(db.Integer)
     startTime: datetime = db.Column(db.DateTime)
     isActive: bool = db.Column(db.Boolean)
+    attributes: property(lambda self: db.session.query('EventAttribute').filter(lambda attr: attr.eventId == self.id))
 
     def __init__(self, cuisine: Cuisine, host: User, ticketPrice: int, address: str, coarseLocation: str,
                  capacity: int, startTime: datetime):
@@ -99,6 +99,14 @@ class Event():
         self.startTime = startTime
         self.isActive = True
 
+class Attribute():
+    __tablename__ = "Attribute"
+    id: int = db.Column(db.Integer, primary_key=True)
+    name: str = db.Column(db.String(64), unique=True)
+
+    def __init__(self, name: str):
+        self.id = uuid.uuid4()
+        self.name = name
 
 # class Comment(db.Model):
 #    __tablename__ = 'comments'
