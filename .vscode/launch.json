@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "name": "Launch localhost",
+            "url": "http://localhost:5000",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
             "name": "Python: eatwith.me",
             "type": "python",
             "request": "launch",
