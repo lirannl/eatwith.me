@@ -11,7 +11,8 @@ db = SQLAlchemy()
 
 
 def create_app():
-    app = Flask(__name__)  # this is the name of the module/package that is calling this app
+    # this is the name of the module/package that is calling this app
+    app = Flask(__name__)
     app.debug = True
     #app.secret_key = 'utroutoru'
     # set the app configuration data
@@ -31,8 +32,9 @@ def create_app():
 
     # create a user loader function takes userid and returns User
     from .models import User  # importing here to avoid circular references
+
     @login_manager.user_loader
-        def load_user(user_id):
+    def load_user(user_id):
         return website.query.get(int(user_id))
 
     # importing views module here to avoid circular references
@@ -41,14 +43,15 @@ def create_app():
     app.register_blueprint(views.bp)
 
     from . import website
-    app.register_blueprint (website.bp)
+    app.register_blueprint(website.bp)
 
     from . import auth
     app.register_blueprint(auth.bp)
 
-    return app
-    
-    #Error handling
+    # Error handling
+
     @app.errorhandler(404)
     def not_found(e):
         return render_template("404.hmtl")
+
+    return app
