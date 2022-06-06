@@ -1,7 +1,7 @@
 
-#from flask import Blueprint, render_template, request, redirect, url_for
-#from .models import User, Comment
-#from .forms import UserForm, CommentForm
+from flask import Blueprint, render_template, request, redirect, url_for
+from .models import User, Comment
+from .forms import UserForm, CommentForm
 
 #bp = Blueprint('website', __name__, url_perfix='/website')
 
@@ -19,7 +19,7 @@ from xml.etree.ElementTree import Comment
 def create():
     print('Method types', request.method)
     return redirect(url_for('website.new-event'))
-return render_template('website/new-event', form=form)    
+    return render_template('website/new-event', form=form)    
         
 
 class User:
