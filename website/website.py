@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from .models import User, Comment
 from .forms import UserForm, CommentForm
 
-#bp = Blueprint('website', __name__, url_perfix='/website')
+bp = Blueprint('website', __name__, url_perfix='/website')
 
 #@bp.route('/<id>')
 #def show(id):
