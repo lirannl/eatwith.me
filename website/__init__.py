@@ -47,3 +47,8 @@ def create_app():
     app.register_blueprint(auth.bp)
 
     return app
+    
+    #Error handling
+    @app.errorhandler(404)
+    def not_found(e):
+        return render_template("404.hmtl")
