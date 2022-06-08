@@ -51,4 +51,4 @@ def create_app():
     #Error handling
     @app.errorhandler(404)
     def not_found(e):
-        return render_template("404.hmtl")
+        return render_template("error.hmtl")
