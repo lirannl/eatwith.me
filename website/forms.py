@@ -46,9 +46,9 @@ class MealForm(FlaskForm):
   capacity = IntegerField('Capacity', validators=[InputRequired()])
   cuisine = StringField('Cuisine', validators=[InputRequired()])
   ticket_price = FloatField('Ticket Price', validators=[InputRequired()])
-  submit = SubmitField("Create")#leave this part in
+  submit = SubmitField("Create")
   
   #Book form
   class BookForm(FlaskForm):
-      count = IntegerField('Amount of tickets', validators=[InputRequired(), ])#within the validator insure the amount is > 0
+      count = IntegerField('Amount of tickets', validators=[InputRequired(), ])#within the validator make sure the amount is > 0
    

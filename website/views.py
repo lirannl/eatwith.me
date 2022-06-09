@@ -22,6 +22,8 @@ def book_event():
 #Connecting create event
 @bp.rout("create_event")
 def create_event():
-    
+    form_data = request.body
+    user: User = None
+
 
 
