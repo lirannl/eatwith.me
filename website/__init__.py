@@ -50,7 +50,16 @@ def create_app():
 
     return app
     
-    #Error handling
-    @app.errorhandler(404)
+    #Error handling general error messages
+    @app.errorhandler(404)# not found
     def not_found(e):
-        return render_template("error.hmtl")
+        return render_template("error.hmtl", errortype="404")
+
+    @app.errorhandler(403) #if you dont have access
+    def not_found(e):
+        return render_template("error.hmtl", errortype="403")
+    
+    @app.errorhandler(401) #if you havent logged in
+    def not_found(e):
+        return render_template("error.hmtl", errortype="401")
+        
