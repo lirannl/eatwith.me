@@ -32,7 +32,7 @@ def create_app():
     # create a user loader function takes userid and returns User
     from .models import User  # importing here to avoid circular references
     @login_manager.user_loader
-        def load_user(user_id):
+    def load_user(user_id):
         return website.query.get(int(user_id))
 
     # importing views module here to avoid circular references
