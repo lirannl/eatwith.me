@@ -15,6 +15,7 @@ class User(Base):
     username: str = Column(
         String(256), index=True, unique=True)
     salt: bytes = Column(BLOB(64))
+    status: str
     password_hash: bytes = Column(BLOB(64))
     contact_number: str = Column(String(256), unique=True)
     name: str = Column(String(256))
