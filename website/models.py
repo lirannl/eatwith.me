@@ -5,14 +5,13 @@ import random
 from typing import Optional
 from . import db
 
-
 class User(db.Model):
     __tablename__ = 'users'
-    id: bytes = db.Column(db.BLOB(64), primary_key=True)
+    id: bytes = db.Column(db.BLOB(16), primary_key=True, default=Random().randbytes(16))
     username: str = db.Column(
         db.String(256), index=True, unique=True)
-    salt: bytes = db.Column(db.BLOB(64))
-    password_hash: bytes = db.Column(db.BLOB(64))
+    salt: bytes = db.Column(db.BLOB(16))
+    password_hash: bytes = db.Column(db.BLOB(16))
     contact_number: str = db.Column(db.String(256), unique=True)
     name: str = db.Column(db.String(256))
     # events: list = db.relationship('Event',
@@ -28,7 +27,6 @@ class User(db.Model):
         return self.password_hash == sha256(self.salt + password.encode('utf-8')).digest()
 
     def __init__(self, username: str, name: str, contact_number: Optional[str]):
-        self.id = Random().randbytes(64)
         self.username = username
         self.contact_number = contact_number
         self.name = name
@@ -36,8 +34,8 @@ class User(db.Model):
 
 class Cuisine(db.Model):
     __tablename__ = 'cuisines'
-    id: bytes = db.Column(db.BLOB(64), primary_key=True,
-                          default=Random().randbytes(64))
+    id: bytes = db.Column(db.BLOB(16), primary_key=True,
+                          default=Random().randbytes(16))
     name: str = db.Column(db.String(256), index=True,
                           unique=True)
     # events: list = db.relationship('Event', backref='cuisine', lazy='dynamic')
@@ -45,8 +43,8 @@ class Cuisine(db.Model):
 
 class Attribute(db.Model):
     __tablename__ = 'attributes'
-    id: bytes = db.Column(db.BLOB(64), primary_key=True,
-                          default=Random().randbytes(64))
+    id: bytes = db.Column(db.BLOB(16), primary_key=True,
+                          default=Random().randbytes(16))
     name: str = db.Column(db.String(256), index=True,
                           unique=True)
     # events: list = db.relationship(
@@ -55,24 +53,24 @@ class Attribute(db.Model):
 
 class Comment(db.Model):
     __tablename__ = 'comments'
-    id: bytes = db.Column(db.BLOB(64), primary_key=True,
-                          default=Random().randbytes(64))
-    eventId: bytes = db.Column(db.BLOB(64), db.ForeignKey('events.id'))
+    id: bytes = db.Column(db.BLOB(16), primary_key=True,
+                          default=Random().randbytes(16))
+    eventId: bytes = db.Column(db.BLOB(16), db.ForeignKey('events.id'))
     # event = db.relationship('Event', backref='comments', lazy='dynamic')
     creation_time = db.Column(db.DateTime, default=datetime.utcnow)
     content = db.Column(db.String(16384))
-    commenterId = db.Column(db.BLOB(64), db.ForeignKey('users.id'))
+    commenterId = db.Column(db.BLOB(16), db.ForeignKey('users.id'))
     # commenter = db.relationship('User', backref='comments', lazy='dynamic')
 
 
 class Event(db.Model):
     __tablename__ = 'events'
-    id: bytes = db.Column(db.BLOB(64), primary_key=True,
-                          default=Random().randbytes(64))
-    cuisineId: bytes = db.Column(db.BLOB(64), db.ForeignKey('cuisines.id'))
+    id: bytes = db.Column(db.BLOB(16), primary_key=True,
+                          default=Random().randbytes(16))
+    cuisineId: bytes = db.Column(db.BLOB(16), db.ForeignKey('cuisines.id'))
     # cuisine: Cuisine = db.relationship(
     #     'Cuisine', backref=backref('events', lazy='dynamic'))
-    hostId: bytes = db.Column(db.BLOB(64), db.ForeignKey('users.id'))
+    hostId: bytes = db.Column(db.BLOB(16), db.ForeignKey('users.id'))
     # host: User = db.relationship(
     #     'User', backref=backref('events', lazy='dynamic'))
     attendees: list[User] = db.relationship('User',
@@ -120,16 +118,16 @@ class Event(db.Model):
 
 # event_attributes = Table('event_attributes',
 #                             db.metadata,
-#                             db.Column('eventId', db.BLOB(64),
+#                             db.Column('eventId', db.BLOB(16),
 #                                       db.ForeignKey('events.id')),
-#                             db.Column('attributeId', db.BLOB(64),
+#                             db.Column('attributeId', db.BLOB(16),
 #                                       db.ForeignKey('attributes.id'))
 #                             )
 attendees = db.Table('attendees', db.metadata,
-                     db.Column('id', db.BLOB(64),
-                               default=Random().randbytes(64)),
-                     db.Column('eventId', db.BLOB(64),
+                     db.Column('id', db.BLOB(16),
+                               default=Random().randbytes(16)),
+                     db.Column('eventId', db.BLOB(16),
                                db.ForeignKey('events.id')),
-                     db.Column('userId', db.BLOB(64),
+                     db.Column('userId', db.BLOB(16),
                                db.ForeignKey('users.id'))
                      )
