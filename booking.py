@@ -1,5 +1,6 @@
 from datetime import datetime
-from .user import User
+from . import User
+from website import website
 class Booking:
 
     def __init__(self, startdate, enddate, city, user):

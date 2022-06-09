@@ -23,5 +23,10 @@ class RegisterForm(FlaskForm):
                   EqualTo('confirm', message="Passwords should match")])
     confirm = PasswordField("Confirm Password")
 
+    #User comment 
+    class CommentForm(FlaskForm):
+        text: TextAreaField('Comment', [InputRequired])
+        sumbit: SubmitField('Create')
+
     #submit button
     submit = SubmitField("Register")

@@ -1,5 +1,4 @@
 
-
 class User:
     # this is the function used to create the user
     def __init__(self):
@@ -17,4 +16,3 @@ class User:
         s= "Name: {0}, Email: {1}, type: {2}\n"
         s=s.format(self.uname, self.emailID, self.user_type)
         return s
-

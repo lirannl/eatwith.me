@@ -1,4 +1,3 @@
-from xml.etree.ElementTree import Comment
 from . import db
 from datetime import datetime
 
@@ -26,30 +25,39 @@ class website: # use the keyword class
         str.format(self.name)
         return str
 
-class Admin(User): # derived class of User1
-    def __init__(self, name, email, privilege):
-        super().__init__(name,email) #when you call base class method super()
-        self.type='admin'
-        self.privilege=privilege
+#class Admin(User): # derived class of User1
+#    def __init__(self, name, email, privilege):
+#        super().__init__(name,email) #when you call base class method super()
+#        self.type='admin'
+#        self.privilege=privilege
 
-# relation to call user.comment and comment.created_by
-#comments = db.relationship('Comment', backref='user')
+class Cuisine(db.Model):
+    __tablename__ = 'tbl_cuisine'
+    id          = db.Column(db.Integer, primary_key=True)
+    name        = db.Column(db.String(80))
+    description = db.Column(db.String(200))
+    date_from   = db.Column(db.DateTime)
+    date_to     = db.Column(db.DateTime)
+    image       = db.Column(db.String(400))
+    quantity    = db.Column(db.Integer())
+    price       = db.Column(db.Integer())
+    # ... Create the Comments db.relationship
+	# relation to call destination.comments and comment.destination
+    # comments = db.relationship('Comment', backref='Cuisine')
+ 
+    def __repr__(self): 
+        return "<Name: {}>".format(self.name)
+        
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.DateTime, default=datetime.now())
+    #add the foreign keys
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    website_id = db.Column(db.Interger, db.ForeignKey('website.id'))
 
-
-#class Comment(db.Model):
-#    __tablename__ = 'comments'
-#    id = db.Column(db.Integer, primary_key=True)
-#    text = db.Column(db.DateTime, default=datetime.now())
-#    #add the foreign keys
-#    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-#    website_id = db.Column(db.Interger, db.ForeignKey('website.id'))
-
-#   might not need if we have one for the user 
-#   def __repr__(self):
+#    def __repr__(self):
 #        return "<Comment: {}>".format(self.text)
-
-
-
    # def __init__(self, user, text, created_at):
     #    self.user = user
      #   self.text = text
