@@ -78,11 +78,13 @@ class Event(Base):
     hostId: bytes = Column(BLOB(64), ForeignKey('users.id'))
     # host: User = relationship(
     #     'User', backref=backref('events', lazy='dynamic'))
+
     ticket_price: Float = Column(Numeric(precision=10, scale=2))
     address: str = Column(String(2048))
     coarse_location: str = Column(String(256))
     description: str = Column(String(2048))
     capacity: int = Column(Integer)
+    image: bytes = Column(BLOB(1024 * 1024 * 10))
     time: datetime = Column(DateTime)
     # attributes: list[Attribute] = relationship('Attribute',
     #                                               secondary='event_attributes',
@@ -94,15 +96,17 @@ class Event(Base):
                                          secondary='attendees',
                                          backref='events', lazy='dynamic')
 
-    def __init__(self, time: datetime, address: str, coarse_location: str, description: str, capacity: int, cuisine: Cuisine):
+    def __init__(self, time: datetime, address: str, coarse_location: str, description: str, capacity: int, cuisine: Cuisine, ticket_price: float, image: bytes, host: User):
         self.time = time
+        self.image = image
         self.address = address
         self.coarse_location = coarse_location
         self.description = description
         self.capacity = capacity
-        self.ticket_price = 0
+        self.ticket_price = ticket_price
         self.isActive = True
         self.cuisine = cuisine
+        self.hostId = host.id
 
 
 # event_attributes = Table('event_attributes',
