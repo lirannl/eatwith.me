@@ -47,14 +47,14 @@
       <event-card class="col-sm-6 col-lg-4">
         <div class="card">
           <div class="card-title">
-            <h4>{{ cuisine.name }}</h4>
-            <h4><i class="status">{{ cuisine.status }}</i></h4>
+            <h4>{{ cruisine.name }}</h4>
+            <h4><i class="status">{{ event.isActive }}</i></h4>
           </div>
           <div class="card-text">
             <div class="img-vert-container">
               <a href="#">
-                <img src="{{ url_for('static', filename='img/'+cuisine.image) }}" />
-                <span>{{ cuisine.description }}</span>
+                <img src="{{ event.image }}" />
+                <span>{{ event.description }}</span>
               </a>
               <div class="bi bi-chevron-down event-expand" type="button" data-bs-toggle="collapse"
                 data-bs-target="#event1" aria-expanded="false" aria-controls="event1">
@@ -62,9 +62,9 @@
             </div>
             <div class="collapse" id="event1">
               <ul>
-                <li>Price: <i>{{ cuisine.price }}</i></li>
-                <li>Location: <i>{{ cuisine.quantity }}</i></li>
-                <li>DateTime: <i>{{ cuisine.date_from }} to {{ cuisine.date_to }}</i></li>
+                <li>Price: <i>{{ event.ticket_price }}</i></li>
+                <li>Location: <i>{{ event.capacity }}</i></li>
+                <li>DateTime: <i>{{ event.time }}</i></li>
               </ul>
             </div>
           </div>
