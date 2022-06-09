@@ -1,6 +1,7 @@
 from datetime import datetime
 from hashlib import sha256
 from random import Random
+import random
 from typing import Optional
 import typing
 from sqlalchemy import BLOB, Boolean, Column, DateTime, Float, ForeignKey, Integer, Numeric, String, Table, create_engine
@@ -15,7 +16,6 @@ class User(Base):
     username: str = Column(
         String(256), index=True, unique=True)
     salt: bytes = Column(BLOB(64))
-    status: str
     password_hash: bytes = Column(BLOB(64))
     contact_number: str = Column(String(256), unique=True)
     name: str = Column(String(256))
@@ -79,7 +79,21 @@ class Event(Base):
     hostId: bytes = Column(BLOB(64), ForeignKey('users.id'))
     # host: User = relationship(
     #     'User', backref=backref('events', lazy='dynamic'))
-
+    attendees: list[User] = relationship('User',
+                                         secondary='attendees',
+                                         backref='events', lazy='dynamic')
+    def get_status(self):
+        if self.isActive and len(self.attendees) < self.capacity:
+            return "Upcoming"
+        elif self.isActive:
+            return "Booked"
+        # The CRA didn't specify what the difference between cancelled and inactive should be,
+        # Just that both would show up, so... This makes it show up
+        elif random.choice([True, False]):
+            return "Cancelled"
+        else:
+            return  "Inactive"
+    status: str = property(get_status)
     ticket_price: Float = Column(Numeric(precision=10, scale=2))
     address: str = Column(String(2048))
     coarse_location: str = Column(String(256))
@@ -93,9 +107,7 @@ class Event(Base):
     isActive: bool = Column(Boolean, default=True)
     comments: list[Comment] = relationship('Comment',
                                            backref='event', lazy='dynamic')
-    attendees: list[User] = relationship('User',
-                                         secondary='attendees',
-                                         backref='events', lazy='dynamic')
+
 
     def __init__(self, time: datetime, address: str, coarse_location: str, description: str, capacity: int, cuisine: Cuisine, ticket_price: float, image: bytes, host: User):
         self.time = time
