@@ -1,19 +1,25 @@
 
+from asyncio import events
+from csv import unregister_dialect
 from flask import Blueprint, render_template, request, redirect, url_for
-from .models import User, Comment
+from .models import User, Comment, website
 from .forms import UserForm, CommentForm
 from crypt import methods
 from urllib import request
 from xml.etree.ElementTree import Comment
+from auth import login_required
+from flask_sqlalchemy import SQLAlchemy
+from . import db
+
 
 bp = Blueprint('website', __name__, url_perfix='/website')
 
 @bp.route('/<id>')
 def show(id):
-    #website = ()
+    website = website.query.get(id=id).first()
     # create the comment form
     cform = CommentForm()
-    #return render_template('website/my-event.html', website=, form=cform )
+    return render_template('website/show.html', website=website, cform=cform)
 
 
 @bp.route('/new-event', methods = ['GET', 'POST'])
@@ -40,20 +46,18 @@ class User:
         s= "Name: {0}, Email: {1}, type: {2}\n"
         s=s.format(self.uname, self.emailID, self.user_type)
         return s
-  #  @bp.route('/<id>/comment, method = ['Get', 'POST'])
- #   def comment (id):
-        #here the form is created form = CommentForm()
-#        form = CommentForm()
-    #if form.validate_on_submit(): #this is true only in case of POST method
-        #print("The following comment has been posted", form.text.data)
-        # notice the signature of url_for
-        #return redirect(url_for('website.show', id=1))
-        
+    @bp.route('/<my_event>/comments', methods = ['GET', 'POST'])
+    @login_required
+    def comment (id):
+        form = CommentForm()
+        website_obj = website.query.get(id=id).first()
+        if form.validate_on_submit():
+            comment = Comment(body=form.body.data, website=website_obj,user=User)
+            db.session.add(comment)
+            db.session.commit()
 
-    def get_website():
-        # a comment
-        #comment = Comment()
-        #User.set_comments(comment)
-        #comment = Comment()
-        #User.set_comments(comment)
-        #return User
+            print('Comment added','success')
+            
+            return redirect(url_for('website.show', id=website_obj.id))
+            
+  

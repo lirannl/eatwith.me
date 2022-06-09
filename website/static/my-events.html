@@ -1,3 +1,10 @@
+{% extends 'base.html' %}
+
+{% import "bootstrap/wtf.html" %}
+
+{% block content %}
+
+
 <html>
 
 <head>
@@ -11,6 +18,7 @@
     <title>SocialEaters</title>
 </head>
 
+<!--Event-->
 <body>
     <top-bar><img class="logo" src="img/logo.png" /></top-bar>
     <div class="content">
@@ -68,9 +76,83 @@
             </div>
         </event-card>
     </div>
+
+    <!--My Event-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card my-3">
+            <div class="card-body">
+                <div class="media">
+                    <img class="alight-self-start mr-3" src="img/splash.jpg" />
+                    <div ckass="media-body">
+                        <small class="font-weight-bold">
+                            <a href="event.html">Wine & Prosciutto</a>
+                        <h5 class="mt-0">My Events</h5>
+                        <p>
+                            Eat With Me is the largest dedicated homemade food event in Australia. 
+                            
+                            Hosted at the Brisbane Showground in Bowen Hill, this event gives visitors a chance to discover new homemade products, taste the best food and find a great food deal. 
+
+                            Hosted by QUT IAB207 Group in 2022 and is perfect for those who missed homemade meals or in general loves homemade food.
+
+                            Where can you find everything homecooked under one roof? Only at the Eat With Me Expo Brisbane. 
+
+                            The expo runs from Sunday the 12th of June, fro 9am to 4pm. 
+                        </p>
+                        <p>
+                            <a href="new-event.html">
+                                <button class="btn btn-primary">View Event</button>
+
+                            </a>
+                        </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<hr>
+
+<!--comment-->
+<div class="row">
+    <div class="col-md-12">
+        <h2>Comments</h2>
+    </div>
+</div>
+
+<div class="row border-bottom">
+    {{wtf.comment.comment_form(form,"event/{0}/comment".format(event_id))}}
+    {% for comment in comments %}
+    <div class="col-md-12">
+        <b>{{comment.user.name}} <span class="ml-2 text-muted">{{comment.created_at}}</span></b>
+        <p>{{comment.content}}</p>
+    </div>
+    {% endfor %}
+</div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-text">
+                <p>SocialEaters is a platform for people to find and join events.</p>
+                <p>Copyright &copy; 2020</p>
+            </div>
+            <div class="footer-icons">
+                <a href="https://www.facebook.com/"><img src="img/facebook.png" /></a>
+                <a href="https://www.instagram.com/"><img src="img/instagram.png" /></a>
+                <a href="https://www.twitter.com/"><img src="img/twitter.png" /></a>
+            </div>
+        </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 </body>
+
+
+    {% endblock %}
+
+
+    class
 
 </html>
