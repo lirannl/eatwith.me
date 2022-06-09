@@ -71,18 +71,18 @@ class Comment(db.Model):
 
 
 #create a base class
-normal_user = User('countvoncount', 'cvc@sstreet.com')
-normal_user.set_password('vatesdenoovdeday')
+user = User('countvoncount', 'cvc@sstreet.com')
+user.set_password('vatesdenoovdeday')
 
 # create the derived or admin class
-admin_user = Admin('kermit', 'kermie@x.sstreet.com', 'xyzere')
+user = User('kermit', 'kermie@x.sstreet.com', 'xyzere')
 
  # the base class method is accessible in the derived class
-admin_user.set_password('dreamersandme') 
+user.set_password('dreamersandme') 
 
 #print both the classes
-print(normal_user)
-print(admin_user)
+print(user)
+
 
 
 
