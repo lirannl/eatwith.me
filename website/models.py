@@ -1,92 +1,120 @@
-from . import db
 from datetime import datetime
+from hashlib import sha256
+from random import Random
+from typing import Optional
+import typing
+from sqlalchemy import BLOB, Boolean, Column, DateTime, Float, ForeignKey, Integer, Numeric, String, Table, create_engine
+from sqlalchemy.orm import declarative_base, relationship, Session, backref
+
+Base = declarative_base()
 
 
-class website: # use the keyword class
+class User(Base):
+    __tablename__ = 'users'
+    id: bytes = Column(BLOB(64), primary_key=True)
+    username: str = Column(
+        String(256), index=True, unique=True)
+    salt: bytes = Column(BLOB(64))
+    password_hash: bytes = Column(BLOB(64))
+    contact_number: str = Column(String(256), unique=True)
+    name: str = Column(String(256))
+    # events: list = relationship('Event',
+    #                             secondary='attendees',
+    #                             backref='attendees', lazy='dynamic')
 
-    def __init__(self, name1, email1): #constuct an object of this class
-        self.name = name1 # define and access attributes of the class using self.
-        self.email = email1
-        self.type='normal'
-        self.password_hash=None
-        self.comment = list()
+    def set_password(self, password: str):
+        self.salt = Random().randbytes(64)
+        self.password_hash = sha256(
+            self.salt + password.encode('utf-8')).digest()
 
-     #  the set password method goes here
-    def set_password(self, password):
-        self.password_hash=password
+    def check_password(self, password: str):
+        return self.password_hash == sha256(self.salt + password.encode('utf-8')).digest()
 
-    def __repr__(self):
-        s="Name: {}, Email: {}, Type: {}, Password {}"
-        s= s.format(self.name, self.email, self.type, self.password_hash)
-        return s
-
-    def set_comments(self,comment):
-        str = 'Name {0}'
-        str.format(self.name)
-        return str
-
-class Admin(User): # derived class of User1
-    def __init__(self, name, email, privilege):
-        super().__init__(name,email) #when you call base class method super()
-        self.type='admin'
-        self.privilege=privilege
-
-#class Comment(db.Model):
-#    __tablename__ = 'comments'
-#    id = db.Column(db.Integer, primary_key=True)
-#    text = db.Column(db.DateTime, default=datetime.now())
-#    #add the foreign keys
-#    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-#    website_id = db.Column(db.Interger, db.ForeignKey('website.id'))
-
-#    def __repr__(self):
-#        return "<Comment: {}>".format(self.text)
-   # def __init__(self, user, text, created_at):
-    #    self.user = user
-     #   self.text = text
-      #  self.create_at = created_at
-
-    #def __repr__(self):
-     #   str = 'User {0}, \n Text {1}'
-      #  str.format(self.user, self.text)
-       # return str
+    def __init__(self, username: str, name: str, contact_number: Optional[str]):
+        self.id = Random().randbytes(64)
+        self.username = username
+        self.contact_number = contact_number
+        self.name = name
 
 
-
-#create a base class
-normal_user = User('countvoncount', 'cvc@sstreet.com')
-normal_user.set_password('vatesdenoovdeday')
-
-# create the derived or admin class
-admin_user = Admin('kermit', 'kermie@x.sstreet.com', 'xyzere')
-
- # the base class method is accessible in the derived class
-admin_user.set_password('dreamersandme') 
-
-#print both the classes
-print(normal_user)
-print(admin_user)
+class Cuisine(Base):
+    __tablename__ = 'cuisines'
+    id: bytes = Column(BLOB(64), primary_key=True,
+                       default=Random().randbytes(64))
+    name: str = Column(String(256), index=True,
+                       unique=True)
+    # events: list = relationship('Event', backref='cuisine', lazy='dynamic')
 
 
+class Attribute(Base):
+    __tablename__ = 'attributes'
+    id: bytes = Column(BLOB(64), primary_key=True,
+                       default=Random().randbytes(64))
+    name: str = Column(String(256), index=True,
+                       unique=True)
+    # events: list = relationship(
+    #     'Event', backref='attribute', lazy='dynamic')
 
 
+class Comment(Base):
+    __tablename__ = 'comments'
+    id: bytes = Column(BLOB(64), primary_key=True,
+                       default=Random().randbytes(64))
+    eventId: bytes = Column(BLOB(64), ForeignKey('events.id'))
+    # event = relationship('Event', backref='comments', lazy='dynamic')
+    creation_time = Column(DateTime, default=datetime.utcnow)
+    content = Column(String(16384))
+    commenterId = Column(BLOB(64), ForeignKey('users.id'))
+    # commenter = relationship('User', backref='comments', lazy='dynamic')
 
 
+class Event(Base):
+    __tablename__ = 'events'
+    id: bytes = Column(BLOB(64), primary_key=True,
+                       default=Random().randbytes(64))
+    cuisineId: bytes = Column(BLOB(64), ForeignKey('cuisines.id'))
+    # cuisine: Cuisine = relationship(
+    #     'Cuisine', backref=backref('events', lazy='dynamic'))
+    hostId: bytes = Column(BLOB(64), ForeignKey('users.id'))
+    # host: User = relationship(
+    #     'User', backref=backref('events', lazy='dynamic'))
+    ticket_price: Float = Column(Numeric(precision=10, scale=2))
+    address: str = Column(String(2048))
+    coarse_location: str = Column(String(256))
+    description: str = Column(String(2048))
+    capacity: int = Column(Integer)
+    time: datetime = Column(DateTime)
+    # attributes: list[Attribute] = relationship('Attribute',
+    #                                               secondary='event_attributes',
+    #                                               backref='events', lazy='dynamic')
+    isActive: bool = Column(Boolean, default=True)
+    comments: list[Comment] = relationship('Comment',
+                                           backref='event', lazy='dynamic')
+    attendees: list[User] = relationship('User',
+                                         secondary='attendees',
+                                         backref='events', lazy='dynamic')
+
+    def __init__(self, time: datetime, address: str, coarse_location: str, description: str, capacity: int, cuisine: Cuisine):
+        self.time = time
+        self.address = address
+        self.coarse_location = coarse_location
+        self.description = description
+        self.capacity = capacity
+        self.ticket_price = 0
+        self.isActive = True
+        self.cuisine = cuisine
 
 
-#create instance of the Hotel class: __init__ method is called here
-#hotel_in_brisbane = Hotel('brisbane', 'Description of Brisbane')
-#print(hotel_in_brisbane)
-
-#create instance of the class
-#hotel_in_sydney = Hotel('sydney', 'Close to Opera house')
-#hotel_in_sydney.add_room('standard','basic room', 45,200)
-#print(hotel_in_sydney)
-#
-#hotel_in_brisbane.add_room('standard',' basic room in Brisbane', 30, 120)
-#print(hotel_in_brisbane)
-
-#you could create independent room objects but current signature of hotel
-# does not let you pass the child object, it takes control of the child object
-#std_room1 = Room('standard', 'Basic room', 30,110)
-#std_room2 = Room('standard', 'Basic room', 45,200)
+# event_attributes = Table('event_attributes',
+#                             Base.metadata,
+#                             Column('eventId', BLOB(64),
+#                                       ForeignKey('events.id')),
+#                             Column('attributeId', BLOB(64),
+#                                       ForeignKey('attributes.id'))
+#                             )
+attendees = Table('attendees', Base.metadata,
+                  Column('eventId', BLOB(64),
+                         ForeignKey('events.id')),
+                  Column('userId', BLOB(64),
+                         ForeignKey('users.id'))
+                  )
