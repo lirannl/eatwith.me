@@ -50,5 +50,4 @@ class MealForm(FlaskForm):
   
   #Book form
   class BookForm(FlaskForm):
-      count = IntegerField('Amount of tickets', validators=[InputRequired(), ])#within the validator make sure the amount is > 0
-   
+    count = IntegerField('Amount of tickets', validators=[InputRequired(), X > 0])#within the validator make sure the amount is > 0
