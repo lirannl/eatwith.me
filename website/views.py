@@ -2,15 +2,14 @@ from flask import Blueprint, redirect
 from flask import render_template
 from sqlalchemy.orm import Session
 from .models import Event, User
-
-bp = Blueprint('main', __name__)
+from . import bp
 
 @bp.route('/')
 def index():
-    return render_template('base.html', cuisines=cs)
+    return render_template('base.html')
 
 #Booking an event code
-@bp.route("book_event")
+@bp.route("/book_event")
 def book_event():
     form_data = request.body
     user: User = None # Code for figuring out which user you're logged in as here
@@ -20,10 +19,10 @@ def book_event():
     return redirect("Where?")
 
 #Connecting create event
-@bp.rout("create_event")
+@bp.route("/create_event")
 def create_event():
     form_data = request.body
-    user: User = None
+#     user: User = None
 
 
 

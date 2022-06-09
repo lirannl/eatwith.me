@@ -1,7 +1,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms.fields import TextAreaField,SubmitField, StringField, PasswordField, FileField, IntegerField, DateTimeField, FloatField
-from wtforms.validators import InputRequired, Length, Email, EqualTo, FileRequired, FileAllowed
+from wtforms.validators import InputRequired, Length, Email, EqualTo
 
 ALLOWED_FILE = {'PNG','JPG','png','jpg'}
 
@@ -37,8 +37,9 @@ class MealForm(FlaskForm):
   description = TextAreaField('Description', 
             validators=[InputRequired()])
   image = FileField('Meal image', validators=[
-    FileRequired(message='Image cannot be empty'),
-    FileAllowed(ALLOWED_FILE, message='Only supports png,jpg,JPG,PNG')])
+    # FileRequired(message='Image cannot be empty'),
+    # FileAllowed(ALLOWED_FILE, message='Only supports png,jpg,JPG,PNG')
+    ])
   Price = StringField('Price', validators=[InputRequired()])
   address = StringField('Address', validators=[InputRequired()])
   time = DateTimeField('Time', validators=[InputRequired()])
@@ -50,4 +51,4 @@ class MealForm(FlaskForm):
   
   #Book form
   class BookForm(FlaskForm):
-    count = IntegerField('Amount of tickets', validators=[InputRequired(), X > 0])#within the validator make sure the amount is > 0
+    count = IntegerField('Amount of tickets', validators=[InputRequired(), ])#within the validator make sure the amount is > 0

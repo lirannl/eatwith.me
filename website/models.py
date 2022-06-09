@@ -97,7 +97,7 @@ class Event(db.Model):
     description: str = db.Column(db.String(2048))
     capacity: int = db.Column(db.Integer)
     image: bytes = db.Column(db.BLOB(1024 * 1024 * 10))
-    time: db.datetime = db.Column(db.DateTime)
+    time: datetime = db.Column(db.DateTime)
     # attributes: list[Attribute] = db.relationship('Attribute',
     #                                               secondary='event_attributes',
     #                                               backref='events', lazy='dynamic')
@@ -105,7 +105,7 @@ class Event(db.Model):
     comments: list[Comment] = db.relationship('Comment',
                                               backref='event', lazy='dynamic')
 
-    def __init__(self, time: db.datetime, address: str, coarse_location: str, description: str, capacity: int, cuisine: Cuisine, ticket_price: float, image: bytes, host: User):
+    def __init__(self, time: datetime, address: str, coarse_location: str, description: str, capacity: int, cuisine: Cuisine, ticket_price: float, image: bytes, host: User):
         self.time = time
         self.image = image
         self.address = address
