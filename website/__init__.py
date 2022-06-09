@@ -1,9 +1,10 @@
 # import flask - from the package import class
-from flask import Flask
+from flask import Blueprint, Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
+bp = Blueprint('website', __name__, template_folder='templates')
 db = SQLAlchemy()
 
 # create a function that creates a web application
@@ -11,7 +12,8 @@ db = SQLAlchemy()
 
 
 def create_app():
-    app = Flask(__name__)  # this is the name of the module/package that is calling this app
+    # this is the name of the module/package that is calling this app
+    app = Flask(__name__)
     app.debug = True
     #app.secret_key = 'utroutoru'
     # set the app configuration data
@@ -19,8 +21,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # initialize db with flask app
     db.init_app(app)
-    app.register_blueprint(bp)
-    
+
     bootstrap = Bootstrap(app)
 
     # initialize the login manager
@@ -33,33 +34,34 @@ def create_app():
 
     # create a user loader function takes userid and returns User
     from .models import User  # importing here to avoid circular references
+
     @login_manager.user_loader
-        def load_user(user_id):
-        return website.query.get(int(user_id))
+    def load_user(user_id: bytes):
+        return User.query.get(User.id == user_id)
 
     # importing views module here to avoid circular references
     # a commonly used practice.
     from . import views
     app.register_blueprint(views.bp)
 
-    from . import website
-    app.register_blueprint (website.bp)
-
     from . import auth
     app.register_blueprint(auth.bp)
 
-    return app
-    
-    #Error handling general error messages
-    @app.errorhandler(404)# not found
+    # Error handling general error messages
+    @app.errorhandler(404)  # not found
     def not_found(e):
-        return render_template("error.hmtl", errortype="404")
+        return render_template("error.html", errortype="404")
 
-    @app.errorhandler(403) #if you dont have access
+    @app.errorhandler(403)  # if you dont have access
     def not_found(e):
-        return render_template("error.hmtl", errortype="403")
-    
-    @app.errorhandler(401) #if you havent logged in
+        return render_template("error.html", errortype="403")
+
+    @app.errorhandler(401)  # if you havent logged in
     def not_found(e):
-        return render_template("error.hmtl", errortype="401")
-        
+        return render_template("error.html", errortype="401")
+
+    @app.errorhandler(500)  # server error
+    def not_found(e):
+        return render_template("error.html", errortype="500")
+
+    return app
