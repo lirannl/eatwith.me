@@ -32,7 +32,7 @@ class RegisterForm(FlaskForm):
     #submit button
     submit = SubmitField("Register")
 
-#Create new meal
+#Create/Update new meal
 class MealForm(FlaskForm):
   name = StringField('Meal', validators=[InputRequired()])
   description = TextAreaField('Description', 
@@ -41,6 +41,5 @@ class MealForm(FlaskForm):
     FileRequired(message='Image cannot be empty'),
     FileAllowed(ALLOWED_FILE, message='Only supports png,jpg,JPG,PNG')])
   Price = StringField('Price', validators=[InputRequired()])
-
   submit = SubmitField("Create")#leave this part in
     
