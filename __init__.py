@@ -16,11 +16,9 @@ def create_app():
     #app.secret_key = 'utroutoru'
     # set the app configuration data
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sitedata.sqlite'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # initialize db with flask app
     db.init_app(app)
-    app.register_blueprint(bp)
-    
+
     bootstrap = Bootstrap(app)
 
     # initialize the login manager
@@ -49,17 +47,3 @@ def create_app():
     app.register_blueprint(auth.bp)
 
     return app
-    
-    #Error handling general error messages
-    @app.errorhandler(404)# not found
-    def not_found(e):
-        return render_template("error.hmtl", errortype="404")
-
-    @app.errorhandler(403) #if you dont have access
-    def not_found(e):
-        return render_template("error.hmtl", errortype="403")
-    
-    @app.errorhandler(401) #if you havent logged in
-    def not_found(e):
-        return render_template("error.hmtl", errortype="401")
-        

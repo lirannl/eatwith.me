@@ -82,3 +82,28 @@ user.set_password('dreamersandme')
 
 #print both the classes
 print(user)
+
+
+
+
+
+
+
+
+
+#create instance of the Hotel class: __init__ method is called here
+#hotel_in_brisbane = Hotel('brisbane', 'Description of Brisbane')
+#print(hotel_in_brisbane)
+
+#create instance of the class
+#hotel_in_sydney = Hotel('sydney', 'Close to Opera house')
+#hotel_in_sydney.add_room('standard','basic room', 45,200)
+#print(hotel_in_sydney)
+#
+#hotel_in_brisbane.add_room('standard',' basic room in Brisbane', 30, 120)
+#print(hotel_in_brisbane)
+
+#you could create independent room objects but current signature of hotel
+# does not let you pass the child object, it takes control of the child object
+#std_room1 = Room('standard', 'Basic room', 30,110)
+#std_room2 = Room('standard', 'Basic room', 45,200)
