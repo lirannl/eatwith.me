@@ -3,22 +3,22 @@ from hashlib import sha256
 from random import Random
 import random
 from typing import Optional
-import typing
+from . import db
 from sqlalchemy import BLOB, Boolean, Column, DateTime, Float, ForeignKey, Integer, Numeric, String, Table, create_engine
 from sqlalchemy.orm import declarative_base, relationship, Session, backref
 
 Base = declarative_base()
 
 
-class User(Base):
+class User(db.Model):
     __tablename__ = 'users'
-    id: bytes = Column(BLOB(64), primary_key=True)
-    username: str = Column(
+    id: bytes = db.Column(BLOB(64), primary_key=True)
+    username: str = db.Column(
         String(256), index=True, unique=True)
-    salt: bytes = Column(BLOB(64))
-    password_hash: bytes = Column(BLOB(64))
-    contact_number: str = Column(String(256), unique=True)
-    name: str = Column(String(256))
+    salt: bytes = db.Column(BLOB(64))
+    password_hash: bytes = db.Column(BLOB(64))
+    contact_number: str = db.Column(String(256), unique=True)
+    name: str = db.Column(String(256))
     # events: list = relationship('Event',
     #                             secondary='attendees',
     #                             backref='attendees', lazy='dynamic')
@@ -38,45 +38,45 @@ class User(Base):
         self.name = name
 
 
-class Cuisine(Base):
+class Cuisine(db.Model):
     __tablename__ = 'cuisines'
-    id: bytes = Column(BLOB(64), primary_key=True,
+    id: bytes = db.Column(BLOB(64), primary_key=True,
                        default=Random().randbytes(64))
-    name: str = Column(String(256), index=True,
+    name: str = db.Column(String(256), index=True,
                        unique=True)
     # events: list = relationship('Event', backref='cuisine', lazy='dynamic')
 
 
-class Attribute(Base):
+class Attribute(db.Model):
     __tablename__ = 'attributes'
-    id: bytes = Column(BLOB(64), primary_key=True,
+    id: bytes = db.Column(BLOB(64), primary_key=True,
                        default=Random().randbytes(64))
-    name: str = Column(String(256), index=True,
+    name: str = db.Column(String(256), index=True,
                        unique=True)
     # events: list = relationship(
     #     'Event', backref='attribute', lazy='dynamic')
 
 
-class Comment(Base):
+class Comment(db.Model):
     __tablename__ = 'comments'
-    id: bytes = Column(BLOB(64), primary_key=True,
+    id: bytes = db.Column(BLOB(64), primary_key=True,
                        default=Random().randbytes(64))
-    eventId: bytes = Column(BLOB(64), ForeignKey('events.id'))
+    eventId: bytes = db.Column(BLOB(64), ForeignKey('events.id'))
     # event = relationship('Event', backref='comments', lazy='dynamic')
-    creation_time = Column(DateTime, default=datetime.utcnow)
-    content = Column(String(16384))
-    commenterId = Column(BLOB(64), ForeignKey('users.id'))
+    creation_time = db.Column(DateTime, default=datetime.utcnow)
+    content = db.Column(String(16384))
+    commenterId = db.Column(BLOB(64), ForeignKey('users.id'))
     # commenter = relationship('User', backref='comments', lazy='dynamic')
 
 
-class Event(Base):
+class Event(db.Model):
     __tablename__ = 'events'
-    id: bytes = Column(BLOB(64), primary_key=True,
+    id: bytes = db.Column(BLOB(64), primary_key=True,
                        default=Random().randbytes(64))
-    cuisineId: bytes = Column(BLOB(64), ForeignKey('cuisines.id'))
+    cuisineId: bytes = db.Column(BLOB(64), ForeignKey('cuisines.id'))
     # cuisine: Cuisine = relationship(
     #     'Cuisine', backref=backref('events', lazy='dynamic'))
-    hostId: bytes = Column(BLOB(64), ForeignKey('users.id'))
+    hostId: bytes = db.Column(BLOB(64), ForeignKey('users.id'))
     # host: User = relationship(
     #     'User', backref=backref('events', lazy='dynamic'))
     attendees: list[User] = relationship('User',
@@ -94,17 +94,17 @@ class Event(Base):
         else:
             return  "Inactive"
     status: str = property(get_status)
-    ticket_price: Float = Column(Numeric(precision=10, scale=2))
-    address: str = Column(String(2048))
-    coarse_location: str = Column(String(256))
-    description: str = Column(String(2048))
-    capacity: int = Column(Integer)
-    image: bytes = Column(BLOB(1024 * 1024 * 10))
-    time: datetime = Column(DateTime)
+    ticket_price: Float = db.Column(Numeric(precision=10, scale=2))
+    address: str = db.Column(String(2048))
+    coarse_location: str = db.Column(String(256))
+    description: str = db.Column(String(2048))
+    capacity: int = db.Column(Integer)
+    image: bytes = db.Column(BLOB(1024 * 1024 * 10))
+    time: datetime = db.Column(DateTime)
     # attributes: list[Attribute] = relationship('Attribute',
     #                                               secondary='event_attributes',
     #                                               backref='events', lazy='dynamic')
-    isActive: bool = Column(Boolean, default=True)
+    isActive: bool = db.Column(Boolean, default=True)
     comments: list[Comment] = relationship('Comment',
                                            backref='event', lazy='dynamic')
 
@@ -124,14 +124,14 @@ class Event(Base):
 
 # event_attributes = Table('event_attributes',
 #                             Base.metadata,
-#                             Column('eventId', BLOB(64),
+#                             db.Column('eventId', BLOB(64),
 #                                       ForeignKey('events.id')),
-#                             Column('attributeId', BLOB(64),
+#                             db.Column('attributeId', BLOB(64),
 #                                       ForeignKey('attributes.id'))
 #                             )
 attendees = Table('attendees', Base.metadata,
-                  Column('eventId', BLOB(64),
+                  db.Column('eventId', BLOB(64),
                          ForeignKey('events.id')),
-                  Column('userId', BLOB(64),
+                  db.Column('userId', BLOB(64),
                          ForeignKey('users.id'))
                   )
