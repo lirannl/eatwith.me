@@ -59,22 +59,6 @@ def create():
         return redirect(url_for('models.create'))
         return render_template('models/create.html')
 
-<<<<<<< HEAD
-        @bp.route('/<my_event>/comments', methods = ['GET', 'POST'])
-        @login_required
-        def comment (id):
-            form = CommentForm()
-            event_obj = website.query.get(id=id).first()
-            if form.validate_on_submit():
-                comment = Comment(body=form.body.data, website=event_obj,user=User)
-                db.session.add(comment)
-                db.session.commit()
-            
-                print('Comment added','success')
-
-                return redirect(url_for('models.show', id=event_obj.id))
-            return render_template('website/show.html', website=event_obj, form=form)
-=======
 
 @bp.route('/<my_event>/comments', methods=['GET', 'POST'])
 def comment(id):
@@ -90,4 +74,3 @@ def comment(id):
 
         return redirect(url_for('models.show', id=event_obj.id))
     return render_template('website/show.html', website=event_obj, form=form)
->>>>>>> 5519dc2b68daf0e71625cf78f4689ca17e4b249b

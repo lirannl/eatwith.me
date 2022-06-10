@@ -49,6 +49,10 @@ def create_app():
     from . import auth
     app.register_blueprint(auth.bp)
 
+    #create meal import
+    from . import meal
+    app.register_blueprint(meal.bp)
+
     # Error handling general error messages
     @app.errorhandler(404)  # not found
     def not_found(e):
