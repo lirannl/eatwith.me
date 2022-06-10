@@ -1,13 +1,12 @@
 from typing import Optional
 from flask import (
-    Blueprint, Response, abort, flash, render_template, request, url_for, redirect
+    Blueprint, Response, abort, flash, render_template, request, redirect
 )
-from werkzeug.security import generate_password_hash, check_password_hash
-
+from urllib.parse import urlparse, unquote
 from website.models import User
 #from .models import User
 from .forms import LoginForm, RegisterForm
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_required, login_user, logout_user
 from . import db
 
 
@@ -15,19 +14,26 @@ from . import db
 bp = Blueprint('auth', __name__)
 
 
-@bp.route('/login', methods=["POST"])
+@bp.route('/login', methods=["GET", "POST"])
 def login():
+    if request.method != "POST":
+        return render_template("base.html")
     username = request.form["username"]
     password = request.form["password"]
     user: Optional[User] = User.query.where(User.username == username).first()
     if user is not None and user.check_password(password):
         if not login_user(user):
             return abort(Response("Not authorised to log in", 403))
+        # Was this request sent from a page that has a "next" parameter?
+        next = unquote(urlparse(request.referrer).query).replace("next=", "")
+        if next != "":
+            return redirect(next)
         return redirect(request.origin)
     flash("Invalid username or password", "login_error")
     return redirect(request.origin)
-    
+
 @bp.route("/logout", methods=["POST"])
+@login_required
 def logout():
     logout_user()
     return redirect("/")

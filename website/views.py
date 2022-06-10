@@ -31,16 +31,20 @@ def book_event():
     return render_template
 
 # Connecting create event
-@bp.route("/create_event", methods = ['GET', 'POST'])
+
+
+@bp.route("/create_event", methods=['GET', 'POST'])
+@login_required
 def create_event():
-    form_data = request.form
     form = MealForm()
-    #if form.validatae_on_submit():
-        #print('Successfully created new meal')
+    if form.validate_on_submit():
+        db.session.add(Event())
     return render_template('event/create.html', form=MealForm())
 
 #   user: User = None
-@bp.route('/<id>')
+
+
+@bp.route('/event/<id>')
 def show(id):
     website = website.query.get(id=id).first()
     # create the comment form
