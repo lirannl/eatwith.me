@@ -27,28 +27,35 @@
         aria-haspopup="true" aria-expanded="false">
         All cuisines
       </button>
-      <div class="dropdown-menu" aria-labelledby="cuisineSelector">
-        <div class="dropdown-item">All cuisines</div>
-        <div class="dropdown-divider"></div>
-        <div class="dropdown-item">Italian</div>
-        <div class="dropdown-item">Japanese</div>
-      </div>
     </drop-down>
     <div class="col-sm-4">
       <input type="text" class="form-control" placeholder="Search Events ..." aria-label="Search">
     </div>
-    <!-- Implement URL -->
-    <a href="#"><i class="bi bi-person"></i></a>
+    <form action="/login" method="POST">
+        <label for="login-username">Username</label>
+        <input type="email" class="form-control" name="username" id="login-username" />
+        <label for="login-username">Password</label>
+        <input type="password" class="form-control" name="password" id="login-password" />
+        <button type="submit">Log in</button>
+    </form>
   </top-bar>
 
   <div class="container-fluid">
+    <div class="dropdown-menu" aria-labelledby="cuisineSelector">
+      <div class="dropdown-item">All cuisines</div>
+      <div class="dropdown-divider"></div>
+      {% for cuisine in cuisines %}
+      <div class="dropdown-item">{cuisine.name}</div>
+      {% endfor %}
+    </div>
     <div class="row" style="margin-left: unset;margin-right: unset;">
       {% for cuisine in cuisines %}
       <event-card class="col-sm-6 col-lg-4">
         <div class="card">
           <div class="card-title">
             <h4>{{ cruisine.name }}</h4>
-            <h4><i class="status">{{ event.status }}</i></h4><!--changed to event.status-->
+            <h4><i class="status">{{ event.status }}</i></h4>
+            <!--changed to event.status-->
           </div>
           <div class="card-text">
             <div class="img-vert-container">
