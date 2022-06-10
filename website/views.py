@@ -3,7 +3,7 @@ import website
 from base64 import b32encode
 from flask import Blueprint, Response, abort, redirect, request, url_for
 from flask import render_template
-from flask_login import login_required, login_user, logout_user, current_user
+from flask_login import login_required, current_user
 from . import db
 
 from website.forms import MealForm, RegisterForm
@@ -22,11 +22,12 @@ def index():
 @login_required
 def book_event():
     form_data = request.form
-    user: User = None  # Code for figuring out which user you're logged in as here
+    user: User = current_user  # Example - how to figure out the user
     event: Event = Event.query.where(
         Event.id == b32encode(form_data["id"].encode())).first()
     if (event.hostId == user.id):
-        return 403  # However you return a 403 response because you can't book your own event
+        # However you return a 403 response because you can't book your own event
+        return abort(403)
     event.attendees.append([user] * form_data.count)
     return render_template
 
