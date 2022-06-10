@@ -1,11 +1,10 @@
-from crypt import methods
 from typing import Optional
 import website
 from base64 import b32encode
 from flask import Blueprint, redirect, request, url_for
 from flask import render_template
 
-from website.forms import RegisterForm
+from website.forms import MealForm, RegisterForm
 from .models import Event, User
 
 
@@ -37,17 +36,18 @@ def book_event():
     if (event.hostId == user.id):
         return 403  # However you return a 403 response because you can't book your own event
     event.attendees.append([user] * form_data.count)
-    return redirect("Where?")
+    return render_template
 
 # Connecting create event
-
-
-@bp.route("/create_event")
+@bp.route("/create_event", methods = ['GET', 'POST'])
 def create_event():
     form_data = request.form
-#     user: User = None
+    form = MealForm()
+    #if form.validatae_on_submit():
+        #print('Successfully created new meal')
+    return render_template('event/create.html', form=MealForm())
 
-
+#   user: User = None
 @bp.route('/<id>')
 def show(id):
     website = website.query.get(id=id).first()

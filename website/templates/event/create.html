@@ -1,17 +1,5 @@
-{% extends 'base.html' %}
-<!--Creating a quick form-->
+{% include "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block content %}
-  <div class="container">
-    <div class="row mt-5">
-      <div class="col-md-12">
-
-        <h1>Add Meal event</h1>
-        <p>Enter an event service you would like.</p>
-        {{wtf.quick_form(form)}}
-        
-      </div>
-    </div>
-  </div>
-
+{% block body %}
+{{wtf.quick_form(form)}}
 {% endblock %}
