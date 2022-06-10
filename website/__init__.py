@@ -4,7 +4,8 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
-bp = Blueprint('website', __name__, template_folder='templates')
+from website.forms import LoginForm
+
 db = SQLAlchemy()
 
 # create a function that creates a web application
@@ -14,6 +15,7 @@ db = SQLAlchemy()
 def create_app():
     # this is the name of the module/package that is calling this app
     app = Flask(__name__)
+    app.config['SECRET_KEY'] = "סודכמוסבהחלט"
     app.debug = True
     #app.secret_key = 'utroutoru'
     # set the app configuration data

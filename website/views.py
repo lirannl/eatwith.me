@@ -2,13 +2,22 @@ from base64 import b32encode
 from flask import Blueprint, redirect, request
 from flask import render_template
 from sqlalchemy.orm import Session
+from website.forms import LoginForm
 from .models import Event, User
-from . import bp
+
+
+bp = Blueprint('website', __name__)
 
 
 @bp.route('/')
 def index():
-    return render_template('base.html')
+    return render_template('base.html', loginform=LoginForm())
+
+
+@bp.route('/login', methods=["POST"])
+def login():
+    print(request.values["email"])
+    return redirect()
 
 # Booking an event code
 

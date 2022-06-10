@@ -1,3 +1,4 @@
+{% import "bootstrap/wtf.html" as wtf %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,8 +38,7 @@
     <div class="col-sm-4">
       <input type="text" class="form-control" placeholder="Search Events ..." aria-label="Search">
     </div>
-    <!-- Implement URL -->
-    <a href="#"><i class="bi bi-person"></i></a>
+    {{wtf.quick_form(loginform)}}
   </top-bar>
 
   <div class="container-fluid">
@@ -48,7 +48,8 @@
         <div class="card">
           <div class="card-title">
             <h4>{{ cruisine.name }}</h4>
-            <h4><i class="status">{{ event.status }}</i></h4><!--changed to event.status-->
+            <h4><i class="status">{{ event.status }}</i></h4>
+            <!--changed to event.status-->
           </div>
           <div class="card-text">
             <div class="img-vert-container">
