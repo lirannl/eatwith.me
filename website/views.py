@@ -28,22 +28,21 @@ def book_event():
     if (event.hostId == user.id):
         return 403  # However you return a 403 response because you can't book your own event
     event.attendees.append([user] * form_data.count)
-    return redirect("Where?")
+    return render_template
 
 # Connecting create event
-
-
-@bp.route("/create_event")
+@bp.route("/create_event", methods = ['GET', 'POST'])
 def create_event():
-    return render_template("event/create.html", form=MealForm())
+    form_data = request.form
+    form = MealForm()
+    #if form.validatae_on_submit():
+        #print('Successfully created new meal')
+    return render_template('event/create.html', form=MealForm())
 
-
-
-@bp.route('/event/<id>')
-def show(id: str):
-    event = Event.query.where(Event.id == id.encode()).first()
-    if event is None:
-        return abort(404)
+#   user: User = None
+@bp.route('/<id>')
+def show(id):
+    website = website.query.get(id=id).first()
     # create the comment form
     # cform = CommentForm()
     return render_template('event/index.html', event=event)
