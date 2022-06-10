@@ -4,8 +4,8 @@ from flask import render_template
 from sqlalchemy.orm import Session
 from .models import Comment, Event, User
 from . import bp, db
-from .forms import LoginForm, RegisterForm, CommentForm, MealForm, BookForm
-from auth import login_required
+#from .forms import LoginForm, RegisterForm, CommentForm, MealForm, BookForm
+#from auth import login_required
 
 import website
 
@@ -47,7 +47,7 @@ def show(id):
 def create():
         print('Method types', request.method)
         return redirect(url_for('models.create'))
-         return render_template('models/create.html')
+        return render_template('models/create.html')
 
         @bp.route('/<my_event>/comments', methods = ['GET', 'POST'])
         @login_required
