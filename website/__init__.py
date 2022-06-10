@@ -15,12 +15,11 @@ db = SQLAlchemy()
 def create_app():
     # this is the name of the module/package that is calling this app
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = "סודכמוסבהחלט"
     app.debug = True
-    #app.secret_key = 'utroutoru'
     # set the app configuration data
+    app.config['SECRET_KEY'] = "סודכמוסבהחלט"
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sitedata.sqlite'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
     # initialize db with flask app
     db.init_app(app)
 
@@ -65,5 +64,9 @@ def create_app():
     @app.errorhandler(500)  # server error
     def not_found(e):
         return render_template("error.html", errortype="500")
+
+    @app.before_first_request
+    def create_tables():
+        db.create_all()
 
     return app
