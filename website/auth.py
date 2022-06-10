@@ -1,38 +1,55 @@
-from flask import ( 
-    Blueprint, flash, render_template, request, url_for, redirect
-) 
-from werkzeug.security import generate_password_hash,check_password_hash
+from typing import Optional
+from flask import (
+    Blueprint, Response, abort, flash, render_template, request, redirect
+)
+from urllib.parse import urlparse, unquote
+from website.models import User
 #from .models import User
-from .forms import LoginForm,RegisterForm
-from flask_login import login_user, login_required,logout_user
+from .forms import LoginForm, RegisterForm
+from flask_login import login_required, login_user, logout_user
 from . import db
 
 
-#create a blueprint
+# create a blueprint
 bp = Blueprint('auth', __name__)
 
 
-# this is the hint for a login function
-# @bp.route('/login', methods=['GET', 'POST'])
-# def authenticate(): #view function
-#     print('In Login View function')
-#     login_form = LoginForm()
-#     error=None
-#     if(login_form.validate_on_submit()==True):
-#         user_name = login_form.user_name.data
-#         password = login_form.password.data
-#         u1 = User.query.filter_by(name=user_name).first()
-#         if u1 is None:
-#             error='Incorrect user name'
-#         elif not check_password_hash(u1.password_hash, password): # takes the hash and password
-#             error='Incorrect password'
-#         if error is None:
-#             login_user(u1)
-#             nextp = request.args.get('next') #this gives the url from where the login page was accessed
-#             print(nextp)
-#             if next is None or not nextp.startswith('/'):
-#                 return redirect(url_for('index'))
-#             return redirect(nextp)
-#         else:
-#             flash(error)
-#     return render_template('user.html', form=login_form, heading='Login')
+@bp.route('/login', methods=["GET", "POST"])
+def login():
+    if request.method != "POST":
+        return render_template("base.html")
+    username = request.form["username"]
+    password = request.form["password"]
+    user: Optional[User] = User.query.where(User.username == username).first()
+    if user is not None and user.check_password(password):
+        if not login_user(user):
+            return abort(Response("Not authorised to log in", 403))
+        # Was this request sent from a page that has a "next" parameter?
+        next = unquote(urlparse(request.referrer).query).replace("next=", "")
+        if next != "":
+            return redirect(next)
+        return redirect(request.origin)
+    flash("Invalid username or password", "login_error")
+    return redirect(request.origin)
+
+@bp.route("/logout", methods=["POST"])
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
+
+@bp.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        db.session.add(User(
+            request.form["username"], request.form["name"], request.form["contact_number"]))
+        newUser: User = User.query.where(
+            User.username == request.form["username"]).first()
+        newUser.set_password(request.form["password"])
+        try:
+            db.session.commit()
+        except Exception as e:
+            print(e.with_traceback())
+        return redirect("/")
+    return render_template("register.html", form=RegisterForm())
