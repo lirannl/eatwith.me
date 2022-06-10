@@ -47,7 +47,6 @@ class MealForm(FlaskForm):
         FileRequired(message='Image cannot be empty'),
         FileAllowed(ALLOWED_FILE, message='Only supports png,jpg,JPG,PNG')
     ])
-    Price = StringField('Price', validators=[InputRequired()])
     address = StringField('Address', validators=[InputRequired()])
     time = DateTimeField('Time', validators=[InputRequired()])
     coarse_location = StringField(
@@ -56,6 +55,7 @@ class MealForm(FlaskForm):
     cuisine = StringField('Cuisine', validators=[InputRequired()])
     ticket_price = FloatField('Ticket Price', validators=[InputRequired()])
     submit = SubmitField("Create")
+
 
     # Book form
     class BookForm(FlaskForm):
