@@ -13,13 +13,6 @@
 </head>
 
 <body id="app">
-  <user-profile>
-
-  </user-profile>
-  <!-- Implement URL  -->
-  <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Add new event">
-    <hover-button>+</hover-button>
-  </a>
   <top-bar>
     <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" />
     <drop-down class="dropdown">
@@ -31,16 +24,37 @@
     <div class="col-sm-4">
       <input type="text" class="form-control" placeholder="Search Events ..." aria-label="Search">
     </div>
-    <form action="/login" method="POST">
-        <label for="login-username">Username</label>
-        <input type="email" class="form-control" name="username" id="login-username" />
-        <label for="login-username">Password</label>
-        <input type="password" class="form-control" name="password" id="login-password" />
-        <button type="submit">Log in</button>
+    {% if current_user.is_authenticated %}
+    <form action="/logout" id="logoutForm" method="POST"><span>Hello, {{ current_user.name }}</span><button
+        class="btn btn-secondary">Log out</button>
     </form>
+    {% else %}
+    <form action="/login" id="loginForm" method="POST">
+      <div class="inputs">
+        <div class="form-group">
+          <label for="login-username">Username</label>
+          <input type="email" class="form-control" name="username" id="login-username" />
+        </div>
+        <div class="form-group">
+          <label for="login-username">Password</label>
+          <input type="password" class="form-control" name="password" id="login-password" />
+        </div>
+      </div>
+      <form-actions>
+        <button type="submit" class="btn btn-secondary">Log in</button>
+        <a class="btn btn-secondary" href="/register">Register</a>
+        <div class="text-error">{% with messages = get_flashed_messages(category_filter=["login_error"]) %}
+          {% if messages %}
+          {{ messages[0] }}
+          {% endif %}
+          {% endwith %}
+        </div>
+      </form-actions>
+    </form>
+    {% endif %}
   </top-bar>
 
-  <div class="container-fluid">
+  <div class=" container-fluid">
     <div class="dropdown-menu" aria-labelledby="cuisineSelector">
       <div class="dropdown-item">All cuisines</div>
       <div class="dropdown-divider"></div>
@@ -48,39 +62,10 @@
       <div class="dropdown-item">{cuisine.name}</div>
       {% endfor %}
     </div>
-    <div class="row" style="margin-left: unset;margin-right: unset;">
-      {% for cuisine in cuisines %}
-      <event-card class="col-sm-6 col-lg-4">
-        <div class="card">
-          <div class="card-title">
-            <h4>{{ cruisine.name }}</h4>
-            <h4><i class="status">{{ event.status }}</i></h4>
-            <!--changed to event.status-->
-          </div>
-          <div class="card-text">
-            <div class="img-vert-container">
-              <a href="#">
-                <img src="{{ event.image }}" />
-                <span>{{ event.description }}</span>
-              </a>
-              <div class="bi bi-chevron-down event-expand" type="button" data-bs-toggle="collapse"
-                data-bs-target="#event1" aria-expanded="false" aria-controls="event1">
-              </div>
-            </div>
-            <div class="collapse" id="event1">
-              <ul>
-                <li>Price: <i>{{ event.ticket_price }}</i></li>
-                <li>Location: <i>{{ event.capacity }}</i></li>
-                <li>DateTime: <i>{{ event.time }}</i></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </event-card>
-      {% endfor %}
-    </div>
   </div>
   </div>
+  {% block content %}
+  {% endblock %}
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
     crossorigin="anonymous"></script>

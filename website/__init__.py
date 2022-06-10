@@ -3,6 +3,7 @@ from flask import Blueprint, Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from base64 import b32encode
 
 from website.forms import LoginForm
 
@@ -37,8 +38,8 @@ def create_app():
     from .models import User  # importing here to avoid circular references
 
     @login_manager.user_loader
-    def load_user(user_id: bytes):
-        return User.query.get(User.id == user_id)
+    def load_user(user_id: str):
+        return User.query.get(eval(user_id))
 
     # importing views module here to avoid circular references
     # a commonly used practice.

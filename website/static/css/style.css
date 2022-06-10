@@ -93,7 +93,7 @@ body:not(#event-view) .card-title {
 }
 
 top-bar {
-    height: 4rem;
+    height: min-content;
     width: 100vw;
     padding-right: 4pt;
     padding-left: 4pt;
@@ -105,6 +105,32 @@ top-bar {
     background: url(../img/splash.jpg);
     background-size: cover;
     background-position-y: 25%;
+}
+
+#logoutForm {
+    background: #fffa;
+}
+
+#logoutForm>* {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.text-error {
+    color: #f23;
+}
+
+#loginForm {
+    width: min-content;
+    display: flex;
+    align-items: center;
+    background: #fffa;
+}
+
+#loginForm>.inputs {
+    min-width: 15ch;
+    display: flex;
+    flex-direction: column;
 }
 
 .logo {

@@ -18,23 +18,14 @@ class LoginForm(FlaskForm):
 
 # this is the registration form
 class RegisterForm(FlaskForm):
-    user_name = StringField("User Name", validators=[InputRequired()])
-    email_id = StringField("Email Address", validators=[
+    name = StringField("Name", validators=[InputRequired()])
+    username = StringField("Email Address (username)", validators=[
                            Email("Please enter a valid email")])
-
-    # add buyer/seller - check if it is a buyer or seller hint : Use RequiredIf field
-
-    # linking two fields - password should be equal to data entered in confirm
-    password = PasswordField("Password", validators=[InputRequired(),
-                                                     EqualTo('confirm', message="Passwords should match")])
-    confirm = PasswordField("Confirm Password")
-
-    # User comment
-    class CommentForm(FlaskForm):
-        text: TextAreaField('Comment', [InputRequired])
-        sumbit: SubmitField('Create')
-
-    # submit button
+    contact_number = StringField("Phone number", validators=[InputRequired()])
+    password = PasswordField("Password", validators=[InputRequired(), Length(
+        6, -1, "Password must not be shorter than 6 characters")])
+    confirm = PasswordField("Confirm Password", validators=[
+                            EqualTo('password', message="Passwords should match")])
     submit = SubmitField("Register")
 
 # Create/Update new meal
