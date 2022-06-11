@@ -22,10 +22,13 @@ def create():
     if form.validate_on_submit():
         # call the function that checks and returns image
         db_file_path = check_upload_file(form)
-        cuisine = Cuisine.query().where(Cuisine.name.lower() == request.form.cuisine.lower().trim()).first()
+        cuisine = Cuisine.query.where(Cuisine.name.lower() ==
+                                      request.form.cuisine.lower().trim()).first()
         if cuisine is None:
-          db.session.add(Cuisine(name=(request.form.cuisine.lower()).trim()))
-          cuisine = Cuisine.query().where(Cuisine.name.lower() == request.form.cuisine.lower().trim()).first()
+            db.session.add(Cuisine(name=(request.form.cuisine.lower()).trim()))
+            # Get the newly created cuisine
+            cuisine = Cuisine.query.where(Cuisine.name.lower() ==
+                                          request.form.cuisine.lower().trim()).first()
         meal = Event(name=form.name.data, host=current_user, description=form.description.data,
                      image=db_file_path)
         # add the object to the db session
