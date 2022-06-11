@@ -6,7 +6,7 @@ import os
 from werkzeug.utils import secure_filename
 from flask_login import current_user, login_required
 
-bp = Blueprint('meal', __name__, url_prefix='/meal')
+bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder = '/meal')
 
 # @bp.route('/<id>')
 # def show(id: str):
@@ -37,8 +37,8 @@ def create():
         db.session.commit()
         print('Successfully created new meal')
         # Always end with redirect when form is valid
-        return redirect(url_for('destination.create'))
-    return render_template('destinations/create.html', form=form)
+        return redirect(url_for('meal.create'))
+    return render_template('event/create.html', form=form)
 
 # adding the check upload file form
 

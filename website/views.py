@@ -34,13 +34,7 @@ def book_event():
 # Connecting create event
 
 
-@bp.route("/create_event", methods=['GET', 'POST'])
-@login_required
-def create_event():
-    form = MealForm()
-    if form.validate_on_submit():
-        db.session.add(Event())
-    return render_template('event/create.html', form=MealForm())
+
 
 #   user: User = None
 

@@ -24,6 +24,10 @@
     <div class="col-sm-4">
       <input type="text" class="form-control" placeholder="Search Events ..." aria-label="Search">
     </div>
+    <!--Adding create meal button-->
+    <a class="nav-item nav-link" href="{{url_for('meal.create')}}", style="color:white">Create Meal</a>
+    
+
     {% if current_user.is_authenticated %}
     <form action="/logout" id="logoutForm" method="POST"><span>Hello, {{ current_user.name }}</span><button
         class="btn btn-secondary">Log out</button>
