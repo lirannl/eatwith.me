@@ -29,7 +29,7 @@ def create():
             # Get the newly created cuisine
             cuisine = Cuisine.query.where(Cuisine.name.lower() ==
                                           request.form.cuisine.lower().trim()).first()
-        meal = Event(name=form.name.data, host=current_user, description=form.description.data,
+        meal = Event(name=form.name.data, cuisine=cuisine, host=current_user, description=form.description.data,
                      image=db_file_path)
         # add the object to the db session
         db.session.add(meal)
