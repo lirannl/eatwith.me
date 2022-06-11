@@ -4,7 +4,7 @@ from .forms import MealForm
 from . import db
 import os
 from werkzeug.utils import secure_filename
-from flask_login import login_required
+from flask_login import current_user, login_required
 
 bp = Blueprint('meal', __name__, url_prefix='/meal')
 
@@ -20,7 +20,7 @@ def create():
   if form.validate_on_submit():
     #call the function that checks and returns image
     db_file_path=check_upload_file(form)
-    meal=Event(name=form.name.data,description=form.description.data, 
+    meal=Event(name=form.name.data, host=current_user,description=form.description.data, 
     image=db_file_path)
     # add the object to the db session
     db.session.add(meal)
