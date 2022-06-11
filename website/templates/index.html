@@ -4,11 +4,11 @@
     <hover-button>+</hover-button>
 </a>
 <div class="row" style="margin-left: unset;margin-right: unset;">
-    {% for cuisine in cuisines %}
+    {% for event in events %}
     <event-card class="col-sm-6 col-lg-4">
         <div class="card">
             <div class="card-title">
-                <h4>{{ cruisine.name }}</h4>
+                <h4>{{ event.cuisine.name }}</h4>
                 <h4><i class="status">{{ event.status }}</i></h4>
                 <!--changed to event.status-->
             </div>
