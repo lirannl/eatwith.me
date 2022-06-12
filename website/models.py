@@ -2,12 +2,15 @@ from datetime import datetime
 from hashlib import sha256
 from random import Random
 import random
+from flask_login import UserMixin
 from typing import Optional
 from . import db
 
-class User(db.Model):
+
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
-    id: bytes = db.Column(db.BLOB(16), primary_key=True, default=Random().randbytes(16))
+    id: bytes = db.Column(db.BLOB(16), primary_key=True,
+                          default=Random().randbytes(16))
     username: str = db.Column(
         db.String(256), index=True, unique=True)
     salt: bytes = db.Column(db.BLOB(16))
@@ -68,8 +71,8 @@ class Event(db.Model):
     id: bytes = db.Column(db.BLOB(16), primary_key=True,
                           default=Random().randbytes(16))
     cuisineId: bytes = db.Column(db.BLOB(16), db.ForeignKey('cuisines.id'))
-    # cuisine: Cuisine = db.relationship(
-    #     'Cuisine', backref=backref('events', lazy='dynamic'))
+    cuisine: Cuisine = db.relationship(
+        'Cuisine', backref='events')
     hostId: bytes = db.Column(db.BLOB(16), db.ForeignKey('users.id'))
     # host: User = db.relationship(
     #     'User', backref=backref('events', lazy='dynamic'))
