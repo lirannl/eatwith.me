@@ -42,6 +42,9 @@ def logout():
 @bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        if User.query.filter_by(username=request.form["username"]).first() is not None:
+            flash("Username already exists")
+            return redirect(request.origin)
         db.session.add(User(
             request.form["username"], request.form["name"], request.form["contact_number"]))
         newUser: User = User.query.where(
