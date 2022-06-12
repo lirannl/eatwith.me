@@ -1,5 +1,7 @@
 # import flask - from the package import class
-from flask import Blueprint, Flask, render_template
+from sqlite3 import Cursor
+from termios import CLNEXT
+from flask import Blueprint, Flask, render_template, request
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -47,6 +49,10 @@ def create_app():
 
     from . import auth
     app.register_blueprint(auth.bp)
+
+    # importing event manager
+    from . import event
+    app.register_blueprint(event.bp)
 
     # Error handling general error messages
     @app.errorhandler(404)  # not found

@@ -1,19 +1,35 @@
+from asyncio import new_event_loop
+from crypt import methods
+from http.client import PAYMENT_REQUIRED
 from typing import Optional
 import website
 from base64 import b32encode
 from flask import Blueprint, redirect, request, url_for
 from flask import render_template
+from . import forms, CommentForm, db 
+
 
 from website.forms import MealForm, RegisterForm
-from .models import Event, User
+from .models import Comment, Event, User
+
+login_required = Blueprint('login_required', __name__)
 
 
-bp = Blueprint('website', __name__)
+bp = Blueprint('views', __name__)
+bp = Blueprint('auth', __name__)
+bp = Blueprint('event', __name__)
 
 
 @bp.route('/')
 def index():
     return render_template('base.html')
+
+@bp.route('/')
+def index():
+    events = Event.query.all()
+    book_event = Event.query.filter_by(id=1).first()
+    new_event_loop = new_event_loop.run_until_complete(book_event.book())
+    return render_template('my-events.html', events=events)
 
 @bp.route('/login', methods=["POST"])
 def login():
@@ -59,12 +75,14 @@ def show(id):
 @bp.route('/new-event', methods=['GET', 'POST'])
 def create():
     print('Method types', request.method)
-    return redirect(url_for('models.create'))
-    return render_template('models/create.html')
+    if request.method == 'POST':
+        print('POST')
+        form_data = request.form
+    return render_template('event/create.html')
 
-    @bp.route('/<my_event>/comments', methods=['GET', 'POST'])
-    @login_required
-    def comment(id):
+@bp.route('/<my_event>/comments', methods=['GET', 'POST'])
+@login_required
+def comment(id):
         form = CommentForm()
         event_obj = website.query.get(id=id).first()
         if form.validate_on_submit():
@@ -74,6 +92,15 @@ def create():
             db.session.commit()
 
             print('Comment added', 'success')
+            return redirect(url_for('models.event', id=event_obj.id))
+        return render_template('models.event.html', website=event_obj, form=form)
 
-            return redirect(url_for('models.show', id=event_obj.id))
-        return render_template('website/show.html', website=event_obj, form=form)
+# Route for Event Page
+@bp.route('/event/<id>', methods=['GET', 'POST'])
+def event(id):
+    event = Event.query.filter_by(id=id).first()
+    register = RegisterForm()
+    MealForm = MealForm()
+    PAYMENT_REQUIRED = 403
+    return render_template('event/event.html', event=event, register=register, MealForm=MealForm, PAYMENT_REQUIRED=PAYMENT_REQUIRED)
+    
