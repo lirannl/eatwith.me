@@ -45,7 +45,6 @@ class MealForm(FlaskForm):
     capacity = IntegerField('Capacity', validators=[InputRequired()])
     cuisine = StringField('Cuisine', validators=[InputRequired()])
     ticket_price = FloatField('Ticket Price', validators=[InputRequired()])
-    status = StringField('Status', validators=[InputRequired()])
     submit = SubmitField("Create")
 
 
