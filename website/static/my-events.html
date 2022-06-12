@@ -1,10 +1,3 @@
-{% extends 'base.html' %}
-
-{% import "bootstrap/wtf.html" %}
-
-{% block content %}
-
-
 <html>
 
 <head>
@@ -20,6 +13,11 @@
 
 <!--Event-->
 <body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+    {% import "bootstrap/wtf.html" %}
+
     <top-bar><img class="logo" src="img/logo.png" /></top-bar>
     <div class="content">
         <a href="index.html"><b class="bi bi-arrow-left">Browse all events</b></a>
@@ -142,12 +140,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+
+        {% endblock %}
 </body>
 
-
-    {% endblock %}
-
-
-    class
 
 </html>
