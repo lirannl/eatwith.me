@@ -6,10 +6,6 @@ import website
 from base64 import b32encode
 from flask import Blueprint, Response, abort, redirect, request, url_for
 from flask import render_template
-<<<<<<< HEAD
-from . import forms, CommentForm, db 
-
-=======
 from flask_login import login_required, current_user
 from . import db
 
@@ -28,7 +24,13 @@ bp = Blueprint('event', __name__)
 def index():
     return render_template('base.html')
 
-
+@bp.route('/')
+def index():
+    events = Event.query.all()
+    book_event = Event.query.filter_by(id=1).first()
+    new_event_loop = new_event_loop.run_until_complete(book_event.book())
+    return render_template('my-events.html', events=events)
+    
 @bp.route("/book_event")
 @login_required
 def book_event():
@@ -60,44 +62,13 @@ def show(id):
 
 @bp.route('/new-event', methods=['GET', 'POST'])
 def create():
-<<<<<<< HEAD
-    print('Method types', request.method)
-    if request.method == 'POST':
-        print('POST')
-        form_data = request.form
-    return render_template('event/create.html')
-
-@bp.route('/<my_event>/comments', methods=['GET', 'POST'])
-@login_required
-def comment(id):
-        form = CommentForm()
-        event_obj = website.query.get(id=id).first()
-        if form.validate_on_submit():
-            comment = Comment(body=form.body.data,
-                              website=event_obj, user=User)
-            db.session.add(comment)
-            db.session.commit()
-
-            print('Comment added', 'success')
-            return redirect(url_for('models.event', id=event_obj.id))
-        return render_template('models.event.html', website=event_obj, form=form)
-
-# Route for Event Page
-@bp.route('/event/<id>', methods=['GET', 'POST'])
-def event(id):
-    event = Event.query.filter_by(id=id).first()
-    register = RegisterForm()
-    MealForm = MealForm()
-    PAYMENT_REQUIRED = 403
-    return render_template('event/event.html', event=event, register=register, MealForm=MealForm, PAYMENT_REQUIRED=PAYMENT_REQUIRED)
-    
-=======
         print('Method types', request.method)
         return redirect(url_for('models.create'))
         return render_template('models/create.html')
 
 
 @bp.route('/<my_event>/comments', methods=['GET', 'POST'])
+@login_required
 def comment(id):
     form = CommentForm()
     event_obj = website.query.get(id=id).first()
@@ -108,7 +79,16 @@ def comment(id):
         db.session.commit()
 
         print('Comment added', 'success')
+            
+        return redirect(url_for('models.event', id=event_obj.id))
 
-        return redirect(url_for('models.show', id=event_obj.id))
-    return render_template('website/show.html', website=event_obj, form=form)
->>>>>>> 10029930a128d9d2167c74d162b0e820af4c85d8
+    return render_template('models.event.html', website=event_obj, form=form)
+
+# Route for Event Page
+@bp.route('/event/<id>', methods=['GET', 'POST'])
+def event(id):
+    event = Event.query.filter_by(id=id).first()
+    register = RegisterForm()
+    MealForm = MealForm()
+    PAYMENT_REQUIRED = 403
+    return render_template('event/event.html', event=event, register=register, MealForm=MealForm, PAYMENT_REQUIRED=PAYMENT_REQUIRED)

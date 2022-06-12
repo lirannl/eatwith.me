@@ -1,6 +1,4 @@
 # import flask - from the package import class
-from sqlite3 import Cursor
-from termios import CLNEXT
 from flask import Blueprint, Flask, render_template, request
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -51,15 +49,9 @@ def create_app():
     from . import auth
     app.register_blueprint(auth.bp)
 
-<<<<<<< HEAD
-    # importing event manager
-    from . import event
-    app.register_blueprint(event.bp)
-=======
     #create meal import
     from . import meal
     app.register_blueprint(meal.bp)
->>>>>>> 10029930a128d9d2167c74d162b0e820af4c85d8
 
     # Error handling general error messages
     @app.errorhandler(404)  # not found
