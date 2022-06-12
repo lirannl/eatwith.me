@@ -8,7 +8,7 @@ from flask import Blueprint, Response, abort, redirect, request, url_for
 from flask import render_template
 from flask_login import login_required, current_user
 
-from website.helpers import string_to_id
+from website.helpers import id_to_string, string_to_id
 from . import db
 
 from website.forms import MealForm, RegisterForm
@@ -55,7 +55,9 @@ def book_event():
 
 @bp.route('/event/<id>')
 def show(id: str):
-    event = Event.query.get(id=string_to_id(id)).first()
+    event: Optional[Event] = Event.query.get(id=string_to_id(id))
+    if (event is None):
+        return abort(404)
     # create the comment form
     # cform = CommentForm()
     return render_template('event/index.html', event=event)
@@ -68,11 +70,11 @@ def create():
     return render_template('models/create.html')
 
 
-@bp.route('/<my_event>/comments', methods=['GET', 'POST'])
+@bp.route('/event/<id>/comments', methods=['GET', 'POST'])
 @login_required
-def comment(id):
+def comment(id: str):
     form = CommentForm()
-    event_obj = website.query.get(id=id).first()
+    event_obj: Optional[Event] = Event.query.get(string_to_id(id))
     if form.validate_on_submit():
         comment = Comment(body=form.body.data,
                           website=event_obj, user=User)
@@ -81,7 +83,7 @@ def comment(id):
 
         print('Comment added', 'success')
 
-        return redirect(url_for('models.event', id=event_obj.id))
+        return redirect(url_for('models.event', id=id_to_string(event_obj.id)))
 
     return render_template('models.event.html', website=event_obj, form=form)
 
@@ -89,8 +91,8 @@ def comment(id):
 
 
 @bp.route('/event/<id>', methods=['GET', 'POST'])
-def event(id):
-    event = Event.query.filter_by(id=id).first()
+def event(id: str):
+    event: Event = Event.query.get(string_to_id(id))
     register = RegisterForm()
     MealForm = MealForm()
     PAYMENT_REQUIRED = 403

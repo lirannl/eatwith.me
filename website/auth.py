@@ -32,6 +32,7 @@ def login():
     flash("Invalid username or password", "login_error")
     return redirect(request.origin)
 
+
 @bp.route("/logout", methods=["POST"])
 @login_required
 def logout():
