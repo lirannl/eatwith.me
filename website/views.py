@@ -12,7 +12,6 @@ from . import forms, CommentForm, db
 =======
 from flask_login import login_required, current_user
 from . import db
->>>>>>> 10029930a128d9d2167c74d162b0e820af4c85d8
 
 from website.forms import MealForm, RegisterForm
 from .models import Comment, Event, User
@@ -29,27 +28,6 @@ bp = Blueprint('event', __name__)
 def index():
     return render_template('base.html')
 
-<<<<<<< HEAD
-@bp.route('/')
-def index():
-    events = Event.query.all()
-    book_event = Event.query.filter_by(id=1).first()
-    new_event_loop = new_event_loop.run_until_complete(book_event.book())
-    return render_template('my-events.html', events=events)
-
-@bp.route('/login', methods=["POST"])
-def login():
-    username = request.values["username"]
-    password = request.values["password"]
-    user: Optional[User] = User.query.where(User.username == username).first()
-    return redirect(request.referrer)
-
-# Booking an event code
-@bp.route("/register", methods=["GET","POST"])
-def register():
-    return render_template("register.html", form=RegisterForm())
-=======
->>>>>>> 10029930a128d9d2167c74d162b0e820af4c85d8
 
 @bp.route("/book_event")
 @login_required
