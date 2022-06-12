@@ -1,6 +1,6 @@
-from asyncio import new_event_loop
-from crypt import methods
-from http.client import PAYMENT_REQUIRED
+#from asyncio import new_event_loop
+#from crypt import methods
+#from http.client import PAYMENT_REQUIRED
 from typing import Optional
 import website
 from base64 import b32encode
@@ -12,24 +12,24 @@ from . import db
 from website.forms import MealForm, RegisterForm
 from .models import Comment, Event, User
 
-login_required = Blueprint('login_required', __name__)
+#login_required = Blueprint('login_required', __name__)
 
-
-bp = Blueprint('views', __name__)
-bp = Blueprint('auth', __name__)
-bp = Blueprint('event', __name__)
+bp = Blueprint('website', __name__)
+#bp = Blueprint('views', __name__)
+#bp = Blueprint('auth', __name__)
+#bp = Blueprint('event', __name__)
 
 
 @bp.route('/')
 def index():
     return render_template('base.html')
 
-@bp.route('/')
-def index():
-    events = Event.query.all()
-    book_event = Event.query.filter_by(id=1).first()
-    new_event_loop = new_event_loop.run_until_complete(book_event.book())
-    return render_template('my-events.html', events=events)
+#@bp.route('/')
+#def index():
+    #events = Event.query.all()
+    #book_event = Event.query.filter_by(id=1).first()
+    #new_event_loop = new_event_loop.run_until_complete(book_event.book())
+    #return render_template('my-events.html', events=events)
     
 @bp.route("/book_event")
 @login_required
