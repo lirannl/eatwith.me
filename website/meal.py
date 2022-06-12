@@ -8,10 +8,11 @@ from flask_login import current_user, login_required
 
 bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder = '/meal')
 
-# @bp.route('/<id>')
-# def show(id: str):
-#     destination = Event.query.get(id)
-#     return render_template('event/index.html', destination=destination)
+#Stroing the db information once user creates a meal
+@bp.route('/<id>')
+def show(id):
+     event = Event.query.filter_by(id=id).first
+     return render_template('event/index.html', event=event)#Look at this and change it
 
 
 @bp.route('/create', methods=['GET', 'POST'])

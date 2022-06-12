@@ -10,6 +10,7 @@ from flask_login import login_required, current_user
 from . import db
 
 from website.forms import MealForm, RegisterForm
+
 from .models import Comment, Event, User
 
 #login_required = Blueprint('login_required', __name__)
@@ -31,9 +32,20 @@ def index():
     #new_event_loop = new_event_loop.run_until_complete(book_event.book())
     #return render_template('my-events.html', events=events)
     
-@bp.route("/book_event")
+@bp.route("/book", methods=['GET', 'POST'])
 @login_required
 def book_event():
+    print('Method type: ', request.method)
+    form = Event(host, time, address,coarse_location,description,capacity,cuisine,ticket_price,image)
+    time = None
+    address = None
+    coarse_location = None
+    description = None
+    capacity = None
+    cuisine = None
+    ticket_price = None
+    image = None
+    host = None
     form_data = request.form
     user: User = current_user  # Example - how to figure out the user
     event: Event = Event.query.where(
