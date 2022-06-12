@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 .devcontainer/
 sitedata.sqlite-journal
+website/sitedata.sqlite
