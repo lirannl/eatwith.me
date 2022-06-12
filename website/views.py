@@ -7,6 +7,8 @@ from base64 import b32encode
 from flask import Blueprint, Response, abort, redirect, request, url_for
 from flask import render_template
 from flask_login import login_required, current_user
+
+from website.helpers import string_to_id
 from . import db
 
 from website.forms import MealForm, RegisterForm
@@ -24,13 +26,14 @@ bp = Blueprint('website', __name__)
 def index():
     return render_template('base.html')
 
-#@bp.route('/')
-#def index():
+# @bp.route('/')
+# def index():
     #events = Event.query.all()
     #book_event = Event.query.filter_by(id=1).first()
     #new_event_loop = new_event_loop.run_until_complete(book_event.book())
-    #return render_template('my-events.html', events=events)
-    
+    # return render_template('my-events.html', events=events)
+
+
 @bp.route("/book_event")
 @login_required
 def book_event():
@@ -47,14 +50,12 @@ def book_event():
 # Connecting create event
 
 
-
-
 #   user: User = None
 
 
 @bp.route('/event/<id>')
-def show(id):
-    website = website.query.get(id=id).first()
+def show(id: str):
+    event = Event.query.get(id=string_to_id(id)).first()
     # create the comment form
     # cform = CommentForm()
     return render_template('event/index.html', event=event)
@@ -62,9 +63,9 @@ def show(id):
 
 @bp.route('/new-event', methods=['GET', 'POST'])
 def create():
-        print('Method types', request.method)
-        return redirect(url_for('models.create'))
-        return render_template('models/create.html')
+    print('Method types', request.method)
+    return redirect(url_for('models.create'))
+    return render_template('models/create.html')
 
 
 @bp.route('/<my_event>/comments', methods=['GET', 'POST'])
@@ -79,12 +80,14 @@ def comment(id):
         db.session.commit()
 
         print('Comment added', 'success')
-            
+
         return redirect(url_for('models.event', id=event_obj.id))
 
     return render_template('models.event.html', website=event_obj, form=form)
 
 # Route for Event Page
+
+
 @bp.route('/event/<id>', methods=['GET', 'POST'])
 def event(id):
     event = Event.query.filter_by(id=id).first()
