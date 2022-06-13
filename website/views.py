@@ -11,7 +11,8 @@ from flask_login import login_required, current_user
 from website.helpers import id_to_string, string_to_id
 from . import db
 
-from website.forms import MealForm, RegisterForm
+#from website.forms import MealForm, RegisterForm
+from .forms import MealForm, RegisterForm
 from .models import Comment, Event, User
 
 #login_required = Blueprint('login_required', __name__)

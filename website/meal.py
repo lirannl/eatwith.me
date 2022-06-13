@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from .models import Comment, Cuisine, Event, User
-from .forms import MealForm, CommentForm
+from .forms import MealForm, RegisterForm #, CommentForm
 from . import db
 import os
 from werkzeug.utils import secure_filename
@@ -60,6 +60,7 @@ def check_upload_file(form):
     fp.save(upload_path)
     return db_upload_path
 
+# adding the Comment Form
 @bp.route('/comment/<id>', methods=['GET', 'POST'])
 @login_required
 def comment(id: str):
