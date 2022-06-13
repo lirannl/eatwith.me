@@ -61,20 +61,20 @@ def check_upload_file(form):
     return db_upload_path
 
 # adding the Comment Form
-@bp.route('/comment/<id>', methods=['GET', 'POST'])
-@login_required
-def comment(id: str):
-    form = CommentForm()
-    event_obj: Optional[Event] = Event.query.get(string_to_id(id))
-    if form.validate_on_submit():
-        comment = Comment(body=form.body.data,
-                          website=event_obj, user=User)
-        db.session.add(comment)
-        db.session.commit()
+#@bp.route('/comment/<id>', methods=['GET', 'POST'])
+#@login_required
+#def comment(id: str):
+#    form = CommentForm()
+#    event_obj: Optional[Event] = Event.query.get(string_to_id(id))
+#    if form.validate_on_submit():
+#        comment = Comment(body=form.body.data,
+#                          website=event_obj, user=User)
+#        db.session.add(comment)
+#        db.session.commit()
 
-        print('Comment added', 'success')
+#        print('Comment added', 'success')
 
-        return redirect(url_for('meal.event', id=id_to_string(event_obj.id)))
+#        return redirect(url_for('meal.event', id=id_to_string(event_obj.id)))
 
-    return render_template('event/event.html', website=event_obj, form=form)
+#    return render_template('event/event.html', website=event_obj, form=form)
    
