@@ -51,5 +51,11 @@ class MealForm(FlaskForm):
     # Book form
     class BookForm(FlaskForm):
         # within the validator make sure the amount is > 0
-        count = IntegerField('Amount of tickets',
-                             validators=[InputRequired(), ])
+        count = IntegerField('Amount of tickets', validators=[InputRequired()])
+
+    
+    # Comment form
+    class CommentForm(FlaskForm):
+        comment = TextAreaField('Comment', validators=[InputRequired()])
+        submit = SubmitField("Submit")
+
