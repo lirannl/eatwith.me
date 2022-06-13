@@ -127,7 +127,7 @@ class Event(db.Model):
 #                                       db.ForeignKey('attributes.id'))
 #                             )
 attendees = db.Table('attendees', db.metadata,
-                     db.Column('id', db.BLOB(16),
+                     db.Column('id', db.BLOB(16), primary_key=True,
                                default=Random().randbytes(16)),
                      db.Column('eventId', db.BLOB(16),
                                db.ForeignKey('events.id')),
