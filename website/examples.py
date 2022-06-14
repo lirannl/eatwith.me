@@ -1,8 +1,12 @@
 from datetime import datetime
+from typing import Optional
+
+from website.helpers import string_to_id
 from .models import Event, User, Cuisine
 from . import db
 
 # These are simply examples and should not be imported
+
 
 def get_cuisine(name: str):
     cuisine = Cuisine.query.filter_by(name=name).first()
@@ -11,6 +15,7 @@ def get_cuisine(name: str):
         db.session.commit()
         cuisine = Cuisine.query.filter_by(name=name).first()
     return cuisine
+
 
 def create_event():
     new_event = Event(description='Homemade prosciutto and red wine',
@@ -22,3 +27,8 @@ def create_event():
                       image=bytes(),
                       host=User.query.filter_by(name="Chris").first(),
                       cuisine=get_cuisine("Italian"))
+
+
+def get_event(id: str):
+    event: Optional[Event] = Event.query.get(string_to_id(id))
+    return event
