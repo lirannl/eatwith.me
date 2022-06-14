@@ -1,4 +1,4 @@
-<html>
+<!-- <html>
 
 <head>
     <meta charset="UTF-8" />
@@ -11,12 +11,49 @@
     <title>SocialEaters</title>
 </head>
 
-<!--Event-->
-<body>
+
+<body> -->
     {% extends 'base.html' %}
 
     {% block content %}
     {% import "bootstrap/wtf.html" %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>My Events</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>{{ event.name }}</h2>
+                                <p>{{ event.description }}</p>
+                                <p>{{ event.date }}</p>
+                                <p>{{ event.location }}</p>
+                                <p>{{ event.price }}</p>
+                                <p>{{ event.capacity }}</p>
+                                <p>{{ event.tags }}</p>
+                                <p>{{ event.organizer }}</p>
+                                <p>{{ event.organizer_email }}</p>
+                                <p>{{ event.organizer_phone }}</p>
+                                <p>{{ event.organizer_website }}</p>
+                                <p>{{ event.organizer_description }}</p>
+                                <p>{{ event.organizer_address }}</p>
+                                <p>{{ event.organizer_city }}</p>
+                                <p>{{ event.organizer_state }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                            
+                            
 
     <top-bar><img class="logo" src="img/logo.png" /></top-bar>
     <div class="content">
@@ -24,14 +61,14 @@
         <event-card>
             <div class="card">
                 <div class="card-title">
-                    <h4>Wine & Prosciutto</h4>
+                    <h4>{{event.name}}Wine & Prosciutto</h4>
                     <h4><i class="status">Active</i></h4>
                 </div>
                 <div class="card-text">
                     <div class="img-vert-container">
                         <a href="event.html">
                             <img src="img/proscuitto.jpg" />
-                            <span>Homemade prosciutto and red wine</span>
+                            <span>{{event.description}}Homemade prosciutto and red wine</span>
                         </a>
                         <div class="bi bi-chevron-down event-expand" type="button" data-bs-toggle="collapse"
                             data-bs-target="#event1" aria-expanded="false" aria-controls="event1">
@@ -39,9 +76,9 @@
                     </div>
                     <div class="collapse" id="event1">
                         <ul>
-                            <li>Price: <i>$16</i></li>
-                            <li>Location: <i>Fairfield</i></li>
-                            <li>Time: <i>23/5/2022 19:30</i></li>
+                            <li>Price: <i>{{event.price}}</i></li>
+                            <li>Location: <i>{{event.location}}</i></li>
+                            <li>Time: <i>{{event.time}}</i></li>
                         </ul>
                     </div>
                 </div>
@@ -50,14 +87,14 @@
         <event-card>
             <div class="card">
                 <div class="card-title">
-                    <h4>Ragu & Antipasti</h4>
+                    <h4>{{event.name}}Ragu & Antipasti</h4>
                     <h4><i class="status">Active</i></h4>
                 </div>
                 <div class="card-text">
                     <div class="img-vert-container">
                         <a href="event.html">
                             <img src="img/ragu.jpg" />
-                            <span>Veal ragu & Vegetable antipasti</span>
+                            <span>{{event.description}} Veal ragu & Vegetable antipasti</span>
                         </a>
                         <div class="bi bi-chevron-down event-expand" type="button" data-bs-toggle="collapse"
                             data-bs-target="#event2" aria-expanded="false" aria-controls="event2">
@@ -65,10 +102,10 @@
                     </div>
                     <div class="collapse" id="event2">
                         <ul>
-                            <li>Price: <i>$16</i></li>
-                            <li>Location: <i>Fairfield</i></li>
-                            <li>Time: <i>23/5/2022 19:30</i></li>
-                        </ul>
+                            <li>Price: <i>{{event.price}}</i></li>
+                            <li>Location: <i>{{event.location}}</i></li>
+                            <li>Time: <i>{{event.time}} </i></li>
+                       </ul>
                     </div>
                 </div>
             </div>
@@ -84,9 +121,10 @@
                     <img class="alight-self-start mr-3" src="img/splash.jpg" />
                     <div ckass="media-body">
                         <small class="font-weight-bold">
-                            <a href="event.html">Eat With Me</a>
-                        <h5 class="mt-0">My Events</h5>
+                            <a href="event.html">{{event.name}} Eat With Me</a>
+                        <h5 class="mt-0">{{event.tags}}My Events</h5>
                         <p>
+                            {{event.description}}
                             Eat With Me is the largest dedicated homemade food event in Australia. 
                             
                             Hosted at the Brisbane Showground in Bowen Hill, this event gives visitors a chance to discover new homemade products, taste the best food and find a great food deal. 
@@ -142,7 +180,7 @@
         crossorigin="anonymous"></script>
 
         {% endblock %}
-</body>
+<!-- </body>
 
 
-</html>
+</html> -->

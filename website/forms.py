@@ -48,14 +48,14 @@ class MealForm(FlaskForm):
     submit = SubmitField("Create")
 
 
-    # Book form
-    class BookForm(FlaskForm):
-        # within the validator make sure the amount is > 0
-        count = IntegerField('Amount of tickets', validators=[InputRequired()])
+# Book form
+class BookForm(FlaskForm):
+    # within the validator make sure the amount is > 0
+    count = IntegerField('Amount of tickets', validators=[InputRequired()])
 
     
-    # Comment form
-    class CommentForm(FlaskForm):
-        comment = TextAreaField('Comment', validators=[InputRequired()])
-        submit = SubmitField("Submit")
+# Comment form
+class CommentForm(FlaskForm):
+    comment = TextAreaField('Comment', validators=[InputRequired()])
+    submit = SubmitField("Submit")
 
