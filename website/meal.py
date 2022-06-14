@@ -15,7 +15,7 @@ bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder = '/meal')
 def show(id):
     event = Event.query.filter_by(id=id).first
     comments = Comment.query.all()
-    return render_template("event/my-event.html", event=event, comments=comments)#Look at this and change it
+    return render_template("event/my-event.html", event=event, comments=comments)
     
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
