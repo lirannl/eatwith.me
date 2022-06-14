@@ -10,14 +10,13 @@ from typing import Optional
 
 bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder = '/meal')
 
+#Stroing the db information once user creates a meal
 @bp.route('/<id>')
-def show(id: str):
-    event = Event.query.get(id)
+def show(id):
+    event = Event.query.filter_by(id=id).first
     comments = Comment.query.all()
-    event=event, comments=comments
-    return render_template("event/my-event.html", event=event, comments=comments)
-
-
+    return render_template("event/my-event.html", event=event, comments=comments)#Look at this and change it
+    
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():

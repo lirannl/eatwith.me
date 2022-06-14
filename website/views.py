@@ -11,8 +11,13 @@ from flask_login import login_required, current_user
 from website.helpers import id_to_string, string_to_id
 from . import db
 
+<<<<<<< HEAD
+from website.forms import MealForm, RegisterForm
+
+=======
 #from website.forms import MealForm, RegisterForm
 from .forms import MealForm, RegisterForm
+>>>>>>> 214ff3e2367d21d92774b58382a341b5c054f89e
 from .models import Comment, Event, User
 
 #login_required = Blueprint('login_required', __name__)
@@ -35,9 +40,20 @@ def index():
     # return render_template('my-events.html', events=events)
 
 
-@bp.route("/book_event")
+@bp.route("/book_event")#possibly change this to /book and delete the _event
 @login_required
 def book_event():
+    print('Method type: ', request.method)
+    form = Event(host, time, address,coarse_location,description,capacity,cuisine,ticket_price,image)
+    time = None
+    address = None
+    coarse_location = None
+    description = None
+    capacity = None
+    cuisine = None
+    ticket_price = None
+    image = None
+    host = None
     form_data = request.form
     user: User = current_user  # Example - how to figure out the user
     event: Event = Event.query.where(
