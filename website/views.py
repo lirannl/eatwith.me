@@ -12,7 +12,7 @@ from website.helpers import id_to_string, string_to_id
 from . import db
 
 #from website.forms import MealForm, RegisterForm
-from .forms import MealForm, RegisterForm
+from .forms import MealForm, RegisterForm, BookForm
 from .models import Comment, Event, User
 
 #login_required = Blueprint('login_required', __name__)
@@ -35,29 +35,29 @@ def index():
     # return render_template('my-events.html', events=events)
 
 
-@bp.route("/book_event")#possibly change this to /book and delete the _event
-@login_required
-def book_event():
-    print('Method type: ', request.method)
-    form = Event(host, time, address,coarse_location,description,capacity,cuisine,ticket_price,image)
-    time = None
-    address = None
-    coarse_location = None
-    description = None
-    capacity = None
-    cuisine = None
-    ticket_price = None
-    image = None
-    host = None
-    form_data = request.form
-    user: User = current_user  # Example - how to figure out the user
-    event: Event = Event.query.where(
-        Event.id == b32encode(form_data["id"].encode())).first()
-    if (event.hostId == user.id):
-        # However you return a 403 response because you can't book your own event
-        return abort(403)
-    event.attendees.append([user] * form_data.count)
-    return render_template
+# @bp.route("/create")#possibly change this to /book and delete the _event
+# @login_required
+# def book_event():
+#     print('Method type: ', request.method)
+#     form = Event(host, time, address,coarse_location,description,capacity,cuisine,ticket_price,image)
+#     time = None
+#     address = None
+#     coarse_location = None
+#     description = None
+#     capacity = None
+#     cuisine = None
+#     ticket_price = None
+#     image = None
+#     host = None
+#     form_data = request.form
+#     user: User = current_user  # Example - how to figure out the user
+#     event: Event = Event.query.where(
+#         Event.id == b32encode(form_data["id"].encode())).first()
+#     if (event.hostId == user.id):
+#         # However you return a 403 response because you can't book your own event
+#         return abort(403)
+#     event.attendees.append([user] * form_data.count)
+#     return render_template
 
 # Connecting create event
 
@@ -107,5 +107,6 @@ def event(id: str):
     event: Event = Event.query.get(string_to_id(id))
     register = RegisterForm()
     MealForm = MealForm()
+    BookForm = BookForm()
     PAYMENT_REQUIRED = 403
     return render_template('event/event.html', event=event, register=register, MealForm=MealForm, PAYMENT_REQUIRED=PAYMENT_REQUIRED)

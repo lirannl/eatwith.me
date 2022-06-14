@@ -39,7 +39,7 @@ class MealForm(FlaskForm):
         FileAllowed(ALLOWED_FILE, message='Only supports png,jpg,JPG,PNG')
     ])
     address = StringField('Address', validators=[InputRequired()])
-    time = DateTimeField('Time', validators=[InputRequired()])
+    time = StringField('Time', validators=[InputRequired()])
     coarse_location = StringField(
         'Coarse location', validators=[InputRequired()])
     capacity = IntegerField('Capacity', validators=[InputRequired()])
@@ -48,13 +48,15 @@ class MealForm(FlaskForm):
     submit = SubmitField("Create")
 
 
-# Book form
+    # Book form
 class BookForm(FlaskForm):
-    # within the validator make sure the amount is > 0
-    count = IntegerField('Amount of tickets', validators=[InputRequired()])
+        # within the validator make sure the amount is > 0
+    name = StringField('Description of event', validators=[InputRequired()])
+    ticket = IntegerField('Amount of tickets', validators=[InputRequired()])
+    submit = SubmitField("Submit")
 
     
-# Comment form
+    # Comment form
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment', validators=[InputRequired()])
     submit = SubmitField("Submit")

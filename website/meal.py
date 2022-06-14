@@ -43,6 +43,34 @@ def create():
         return redirect(url_for('meal.create'))
     return render_template('event/create.html', form=form)
 
+# 1. There should be a page showing all the event and for each 'view detail' it redirect to a page with the end point of event id /<event_id>
+# 2. When user click on update button the event id should be passed into the 'update' end point where we just have to find the event with the matching eventid that we passeed in, and update it using mealform
+
+# @bp.route('/detail/<id>', methods=['GET', 'POST'])
+# @login_required
+# def create():
+#   print('Method type: ', request.method)
+#   form = MealForm()
+#   if form.validate_on_submit():
+#     print('place holder')
+#       # get event id from detail endpoint
+#       #need to find the match inside of the database inorder to update
+
+#   return render_template('event/detail.html', form=form)
+
+# #adding update login
+# @bp.route('/update', methods=['GET', 'POST'])
+# @login_required
+# def create():
+#   print('Method type: ', request.method)
+#   form = MealForm()
+#   if form.validate_on_submit():
+#     print('place holder')
+#       # get event id from detail endpoint
+#       #need to find the match inside of the database inorder to update
+
+#   return render_template('event/update.html', form=form)
+
 # adding the check upload file form
 
 
@@ -54,9 +82,9 @@ def check_upload_file(form):
     BASE_PATH = os.path.dirname(__file__)
     # upload file location – directory of this file/static/image
     upload_path = os.path.join(
-        BASE_PATH, 'static/image', secure_filename(filename))
+        BASE_PATH, 'static\\image', secure_filename(filename))
     # store relative path in DB as image location in HTML is relative
-    db_upload_path = '/static/image/' + secure_filename(filename)
+    db_upload_path = '\\static\\image\\' + secure_filename(filename)
     # save the file and return the db upload path
     fp.save(upload_path)
     return db_upload_path
