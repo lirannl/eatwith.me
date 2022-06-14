@@ -68,7 +68,7 @@
                     <div class="img-vert-container">
                         <a href="event.html">
                             <img src="img/proscuitto.jpg" />
-                            <span>{{event.description}} Homemade prosciutto and red wine</span>
+                            <span>{{event.cuisine.name}} Homemade prosciutto and red wine</span>
                         </a>
                         <div class="bi bi-chevron-down event-expand" type="button" data-bs-toggle="collapse"
                             data-bs-target="#event1" aria-expanded="false" aria-controls="event1">
@@ -76,7 +76,7 @@
                     </div>
                     <div class="collapse" id="event1">
                         <ul>
-                            <li>Price: <i>{{event.price}}</i></li>
+                            <li>Price: <i>{{event.ticket_price}}</i></li>
                             <li>Location: <i>{{event.location}}</i></li>
                             <li>Time: <i>{{event.time}}</i></li>
                         </ul>
@@ -87,7 +87,7 @@
         <event-card>
             <div class="card">
                 <div class="card-title">
-                    <h4>{{event.name}}Ragu & Antipasti</h4>
+                    <h4>{{event.cuisine.name}}Ragu & Antipasti</h4>
                     <h4><i class="status">Active</i></h4>
                 </div>
                 <div class="card-text">
@@ -102,7 +102,7 @@
                     </div>
                     <div class="collapse" id="event2">
                         <ul>
-                            <li>Price: <i>{{event.price}}</i></li>
+                            <li>Price: <i>{{event.ticket_price}}</i></li>
                             <li>Location: <i>{{event.location}}</i></li>
                             <li>Time: <i>{{event.time}} </i></li>
                        </ul>
