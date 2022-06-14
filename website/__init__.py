@@ -53,6 +53,10 @@ def create_app():
     from . import meal
     app.register_blueprint(meal.bp)
 
+    #create book import
+    from . import book
+    app.register_blueprint(book.bp)
+
     # Error handling general error messages
     @app.errorhandler(404)  # not found
     def not_found(e):

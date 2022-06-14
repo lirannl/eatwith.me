@@ -11,13 +11,8 @@ from flask_login import login_required, current_user
 from website.helpers import id_to_string, string_to_id
 from . import db
 
-<<<<<<< HEAD
-from website.forms import MealForm, RegisterForm
-
-=======
 #from website.forms import MealForm, RegisterForm
-from .forms import MealForm, RegisterForm
->>>>>>> 214ff3e2367d21d92774b58382a341b5c054f89e
+from .forms import MealForm, RegisterForm, BookForm
 from .models import Comment, Event, User
 
 #login_required = Blueprint('login_required', __name__)
@@ -40,7 +35,7 @@ def index():
     # return render_template('my-events.html', events=events)
 
 
-@bp.route("/book_event")#possibly change this to /book and delete the _event
+@bp.route("/create")#possibly change this to /book and delete the _event
 @login_required
 def book_event():
     print('Method type: ', request.method)
@@ -112,5 +107,6 @@ def event(id: str):
     event: Event = Event.query.get(string_to_id(id))
     register = RegisterForm()
     MealForm = MealForm()
+    BookForm = BookForm()
     PAYMENT_REQUIRED = 403
     return render_template('event/event.html', event=event, register=register, MealForm=MealForm, PAYMENT_REQUIRED=PAYMENT_REQUIRED)

@@ -43,6 +43,14 @@ class Cuisine(db.Model):
                           unique=True)
     # events: list = db.relationship('Event', backref='cuisine', lazy='dynamic')
 
+#Book class
+class Book(db.Model):
+    __tablename__ = 'book'
+    id: bytes = db.Column(db.BLOB(16), primary_key=True,
+                          default=Random().randbytes(16))
+    name: str = db.Column(db.String(256), index=True,
+                          unique=True)
+    ticket: int = db.Column(db.Integer)                      
 
 class Attribute(db.Model):
     __tablename__ = 'attributes'
@@ -79,7 +87,7 @@ class Event(db.Model):
     attendees: list[User] = db.relationship('User',
                                             secondary='attendees',
                                             backref='events', lazy='dynamic')
-
+    #book: Book = db.relationship('Book', backref='events') this line is messing up the code
     def get_status(self):
         if self.isActive and len(self.attendees) < self.capacity:
             return "Upcoming"
@@ -99,6 +107,7 @@ class Event(db.Model):
     capacity: int = db.Column(db.Integer)
     image: bytes = db.Column(db.BLOB(1024 * 1024 * 10))
     time: datetime = db.Column(db.DateTime)
+    avaliable_tickets: int = db.Column(db.Integer)
     # attributes: list[Attribute] = db.relationship('Attribute',
     #                                               secondary='event_attributes',
     #                                               backref='events', lazy='dynamic')
