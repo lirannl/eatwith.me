@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from .models import Comment, Cuisine, Event, User
-from .forms import MealForm, RegisterForm #, CommentForm
+from .forms import MealForm, RegisterForm, CommentForm
 from . import db
 import os
 from werkzeug.utils import secure_filename
@@ -13,10 +13,10 @@ bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder = '/meal')
 #Stroing the db information once user creates a meal
 @bp.route('/<id>')
 def show(id):
-     event = Event.query.filter_by(id=id).first
-     return render_template('event/index.html', event=event)#Look at this and change it
-
-
+    event = Event.query.filter_by(id=id).first
+    comments = Comment.query.all()
+    return render_template("event/my-event.html", event=event, comments=comments)#Look at this and change it
+    
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
@@ -62,20 +62,19 @@ def check_upload_file(form):
     return db_upload_path
 
 # adding the Comment Form
-#@bp.route('/comment/<id>', methods=['GET', 'POST'])
-#@login_required
-#def comment(id: str):
-#    form = CommentForm()
-#    event_obj: Optional[Event] = Event.query.get(string_to_id(id))
-#    if form.validate_on_submit():
-#        comment = Comment(body=form.body.data,
-#                          website=event_obj, user=User)
-#        db.session.add(comment)
-#        db.session.commit()
+@bp.route('/comment/<id>', methods=['GET', 'POST'])
+@login_required
+def comment(id: str):
+    form = CommentForm()
+    event_obj: Optional[Event] = Event.query.get(string_to_id(id))
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data,
+                          website=event_obj, user=User)
+        db.session.add(comment)
+        db.session.commit()
 
-#        print('Comment added', 'success')
+        print('Comment added', 'success')
 
-#        return redirect(url_for('meal.event', id=id_to_string(event_obj.id)))
-
-#    return render_template('event/event.html', website=event_obj, form=form)
+        return redirect(url_for('meal.event', id=id_to_string(event_obj.id)))
+    return render_template('event/event.html', website=event_obj, form=form)
    
