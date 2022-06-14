@@ -25,39 +25,35 @@ def create():
     form = BookForm() 
     if form.validate_on_submit():
         # call the function that checks and returns image
-        book = Book.query.where(Book.name.lower() == 
-                                      request.form.ticket.lower().trim()).first()
-        if book is None:
-            db.session.add(Book(name=(request.form.book.lower()).trim()))
-            # Get the newly created cuisine
-            book = Book.query.where(Book.name.lower() ==
-                                          request.form.book.lower().trim()).first()
-        ticket = Book(name=form.name.data, book=book, host=current_user, description=form.description.data)
-        #num_tickets
-        num_tickets = ticket.capacity
-        # add the object to the db session
-        db.session.add(ticket)
-        # commit to the database
-        db.session.commit()
-        print('Successfully created new ticket')
-        # Always end with redirect when form is valid
+        try:
+            selected_event = Event.query.where(Event.description.lower() == 
+                                        request.form.name.lower().trim()).first()
+            if selected_event is not None:
+                if selected_event.capacity >=request.form.ticket:
+                    print('Place holder for booked out')
+                    #Make a booking table where you store the ticket amount,event id,cost in total,booking_id
+                
+                elif selected_event.capacity<= request.form.ticket:
+                    print('Place holder for commiting all those changes')
+                    #reutrn to user say order being place and return order if for reference
+        except:
+            print('cant find the matching database')
+        
+        # if book is None:
+        #     db.session.add(Book(name=(request.form.book.lower()).trim()))
+        #     # Get the newly created cuisine
+        #     book = Book.query.where(Book.name.lower() ==
+        #                                   request.form.book.lower().trim()).first()
+        # ticket = Book(name=form.name.data, book=book, host=current_user, description=form.description.data)
+        # #num_tickets
+        
+        # # add the object to the db session
+        # db.session.add(ticket)
+        # # commit to the database
+        # db.session.commit()
+        # print('Successfully created new ticket')
+        # # Always end with redirect when form is valid
         return redirect(url_for('meal.create'))
-    return render_template('event/create.html', form=BookForm)
+    return render_template('event/create.html', form=form)
 
 # adding the check upload file form
-
-
-def check_upload_file(form):
-    # get file data from form
-    fp = form.image.data
-    filename = fp.filename
-    # get the current path of the module file… store image file relative to this path
-    BASE_PATH = os.path.dirname(__file__)
-    # upload file location – directory of this file/static/image
-    upload_path = os.path.join(
-        BASE_PATH, 'static/image', secure_filename(filename))
-    # store relative path in DB as image location in HTML is relative
-    db_upload_path = '/static/image/' + secure_filename(filename)
-    # save the file and return the db upload path
-    fp.save(upload_path)
-    return db_upload_path
