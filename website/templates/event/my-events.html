@@ -16,7 +16,7 @@
     {% extends 'base.html' %}
 
     {% block content %}
-    {% import "bootstrap/wtf.html" %}
+    {% import "bootstrap/wtf.html" %}    
 
     <div class="container">
         <div class="row">
@@ -44,7 +44,7 @@
                                 <p>{{ event.organizer_description }}</p>
                                 <p>{{ event.organizer_address }}</p>
                                 <p>{{ event.organizer_city }}</p>
-                                <p>{{ event.organizer_state }}</p>
+                                <p>{{ event.organizer_state }}</p>                            
                             </div>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                     <div class="img-vert-container">
                         <a href="event.html">
                             <img src="img/proscuitto.jpg" />
-                            <span>{{event.description}}Homemade prosciutto and red wine</span>
+                            <span>{{event.description}} Homemade prosciutto and red wine</span>
                         </a>
                         <div class="bi bi-chevron-down event-expand" type="button" data-bs-toggle="collapse"
                             data-bs-target="#event1" aria-expanded="false" aria-controls="event1">
