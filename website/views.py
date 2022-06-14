@@ -11,8 +11,13 @@ from flask_login import login_required, current_user
 from website.helpers import id_to_string, string_to_id
 from . import db
 
+<<<<<<< HEAD
 from website.forms import MealForm, RegisterForm
 
+=======
+#from website.forms import MealForm, RegisterForm
+from .forms import MealForm, RegisterForm
+>>>>>>> 214ff3e2367d21d92774b58382a341b5c054f89e
 from .models import Comment, Event, User
 
 #login_required = Blueprint('login_required', __name__)
@@ -82,22 +87,22 @@ def create():
     return render_template('models/create.html')
 
 
-@bp.route('/event/<id>/comments', methods=['GET', 'POST'])
-@login_required
-def comment(id: str):
-    form = CommentForm()
-    event_obj: Optional[Event] = Event.query.get(string_to_id(id))
-    if form.validate_on_submit():
-        comment = Comment(body=form.body.data,
-                          website=event_obj, user=User)
-        db.session.add(comment)
-        db.session.commit()
+#@bp.route('/event/<id>/comments', methods=['GET', 'POST'])
+#@login_required
+#def comment(id: str):
+#    form = CommentForm()
+#    event_obj: Optional[Event] = Event.query.get(string_to_id(id))
+#    if form.validate_on_submit():
+#        comment = Comment(body=form.body.data,
+#                          website=event_obj, user=User)
+#        db.session.add(comment)
+#        db.session.commit()
 
-        print('Comment added', 'success')
+#        print('Comment added', 'success')
 
-        return redirect(url_for('models.event', id=id_to_string(event_obj.id)))
+#        return redirect(url_for('models.event', id=id_to_string(event_obj.id)))
 
-    return render_template('models.event.html', website=event_obj, form=form)
+#    return render_template('models.event.html', website=event_obj, form=form)
 
 # Route for Event Page
 
