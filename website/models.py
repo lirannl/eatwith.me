@@ -43,18 +43,6 @@ class Cuisine(db.Model):
                           unique=True)
     # events: list = db.relationship('Event', backref='cuisine', lazy='dynamic')
 
-# Book class
-
-
-class Book(db.Model):
-    __tablename__ = 'book'
-    id: bytes = db.Column(db.BLOB(16), primary_key=True,
-                          default=Random().randbytes(16))
-    name: str = db.Column(db.String(256), index=True,
-                          unique=True)
-    ticket: int = db.Column(db.Integer)
-
-
 class Attribute(db.Model):
     __tablename__ = 'attributes'
     id: bytes = db.Column(db.BLOB(16), primary_key=True,
@@ -71,10 +59,16 @@ class Comment(db.Model):
                           default=Random().randbytes(16))
     eventId: bytes = db.Column(db.BLOB(16), db.ForeignKey('events.id'))
     # event = db.relationship('Event', backref='comments', lazy='dynamic')
-    creation_time = db.Column(db.DateTime, default=datetime.utcnow)
+    creation_time: datetime = db.Column(db.DateTime, default=datetime.utcnow)
     content = db.Column(db.String(16384))
     commenterId = db.Column(db.BLOB(16), db.ForeignKey('users.id'))
-    # commenter = db.relationship('User', backref='comments', lazy='dynamic')
+    commenter = db.relationship('User', backref='comments')
+    def __init__(self, content: str, commenter: User, event: any):
+        self.content = content
+        self.commenter = commenter
+        self.event = event
+        self.creation_time = datetime.now()
+
 
 
 class Event(db.Model):

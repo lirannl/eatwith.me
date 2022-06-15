@@ -1,5 +1,7 @@
 import base64
+from crypt import methods
 from datetime import datetime
+from random import Random
 from flask import Blueprint, abort, render_template, request, redirect, url_for
 from .models import Comment, Cuisine, Event, User
 from .forms import MealForm, RegisterForm, CommentForm, DelForm
@@ -136,28 +138,34 @@ def check_upload_file(form):
 # adding the Comment Form
 
 
-@bp.route('<id>/comment', methods=['GET', 'POST'])
-@login_required
-def comment(id: str):
-    form = CommentForm()
-    event_obj: Optional[Event] = Event.query.get(string_to_id(id))
-    if form.validate_on_submit():
-        comment = Comment(body=form.body.data,
-                          website=event_obj, user=User)
-        db.session.add(comment)
-        db.session.commit()
+# @bp.route('<id>/comment', methods=['GET', 'POST'])
+# @login_required
+# def comment(id: str):
+#     form = CommentForm()
+#     event_obj: Optional[Event] = Event.query.get(string_to_id(id))
+#     if form.validate_on_submit():
+#         comment = Comment(website=event_obj, user=User)
+#         db.session.add(comment)
+#         db.session.commit()
 
-        print('Comment added', 'success')
+#         print('Comment added', 'success')
 
-        return redirect(url_for('meal.event', id=id_to_string(event_obj.id)))
-    return render_template('event/event.html', website=event_obj, form=form)
+#         return redirect(url_for('meal.event', id=id_to_string(event_obj.id)))
+#     return render_template('event/event.html', website=event_obj, form=form)
 
 
-@bp.route('/<id>')
+@bp.route('/<id>', methods=["GET", "POST"])
 def show(id: str):
     event: Event = Event.query.get(string_to_id(id))
     if event is None:
         return abort(404)
-    return render_template("event/index.html", event=event,
+    if (request.method == "POST"):
+        comment = Comment(request.form["comment"],
+                          current_user, event)
+        comment.id = Random().randbytes(n=16)
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for('meal.show', id=id))
+    return render_template("event/index.html", event=event, form=CommentForm(),
                            # base64 decoder
                            b64=lambda b: base64.b64encode(b).decode())
