@@ -1,7 +1,8 @@
+import base64
 from datetime import datetime
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, abort, render_template, request, redirect, url_for
 from .models import Comment, Cuisine, Event, User
-from .forms import MealForm, RegisterForm, CommentForm,DelForm
+from .forms import MealForm, RegisterForm, CommentForm, DelForm
 from . import db
 import os
 from werkzeug.utils import secure_filename
@@ -47,9 +48,10 @@ def update():
         # call the function that checks and returns image
         db_file_path = check_upload_file(form)
         updatevent = Event.query.where(Event.description ==
-                                      request.form['name'].lower()).first()
+                                       request.form['name'].lower()).first()
 
-        meal = Event( cuisine=cuisine, host=current_user, description=str(request.form['description']),time=str(request.form['time']),address=str(request.form['address']),coarse_location=str(request.form['coarse_location']),capacity=int(request.form['capacity']),ticket_price=float(request.form['ticket_price']),image=db_file_path)
+        meal = Event(cuisine=cuisine, host=current_user, description=str(request.form['description']), time=str(request.form['time']), address=str(request.form['address']), coarse_location=str(
+            request.form['coarse_location']), capacity=int(request.form['capacity']), ticket_price=float(request.form['ticket_price']), image=db_file_path)
         # Update the table with updatevent(have to make it an Event class)
 
         # add the object to the db session
@@ -62,27 +64,25 @@ def update():
         return redirect(url_for('meal.update'))
     return render_template('event/update.html', form=form)
 
+
 @bp.route('/delmeal', methods=['GET', 'POST'])
 @login_required
 def delmeal():
     print('Method type: ', request.method)
     form = DelForm()
     if form.validate_on_submit():
-        
+
         delevent = Event.query.where(Event.description ==
-                                      request.form['name'].lower()).first()
+                                     request.form['name'].lower()).first()
         if delevent is not None:
             pass
-           #drop the row 
-           #db.session.add(eal)
-
-
+           # drop the row
+           # db.session.add(eal)
 
         # add the object to the db session
-        
 
         # commit to the database
-        #db.session.commit()
+        # db.session.commit()
         print('Successfully deleted meal')
         # Always end with redirect when form is valid
         return redirect(url_for('meal.delet'))
@@ -155,6 +155,9 @@ def comment(id: str):
 
 @bp.route('/<id>')
 def show(id: str):
-    event = Event.query.get(string_to_id(id))
-    comments = Comment.query.all()
-    return render_template("event/index.html", event=event, comments=comments)
+    event: Event = Event.query.get(string_to_id(id))
+    if event is None:
+        return abort(404)
+    return render_template("event/index.html", event=event,
+                           # base64 decoder
+                           b64=lambda b: base64.b64encode(b).decode())

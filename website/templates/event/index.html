@@ -4,7 +4,7 @@
 
 <body>
     <div class="content">
-        <a href="index.html"><b class="bi bi-arrow-left">Browse all events</b></a>
+        <a href="/"><b class="bi bi-arrow-left">Browse all events</b></a>
         <event-card>
             <div class="card">
                 <div class="card-title">
@@ -13,10 +13,8 @@
                 </div>
                 <div class="card-text">
                     <div class="img-vert-container">
-                        <a href="event.html">
-                            <img src="img/ragu.jpg" />
-                            <span>{{event.description}}</span>
-                        </a>
+                        <img src=data:image;base64,{{b64(event.image)}} />
+                        <span>{{event.description}}</span>
                     </div>
                     <ul>
                         <li>Price: <i>{{event.ticket_price}}</i></li>
@@ -40,7 +38,7 @@
     </div>
 
     <div class="row border-bottom">
-        {% for comment in comments %}
+        {% for comment in event.comments %}
         <div class="col-md-12">
             <b>{{comment.user.name}} <span class="ml-2 text-muted">{{comment.created_at}}</span></b>
             <p>{{comment.content}}</p>
