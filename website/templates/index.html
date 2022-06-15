@@ -2,63 +2,64 @@
 
 {% block header %}
 
-  <top-bar><img class="logo" src="img/logo.png" /></top-bar>
-    <!--Jumbotron-->
-    <div class="container">
-      <div class="row justify-content-center mt-5 pb-4">
-        <div class="col-md-12">
-          <div class="card shadow p-5 mb-5 bg-light">
+<top-bar><img class="logo" src="img/logo.png" /></top-bar>
+<!--Jumbotron-->
+<div class="container">
+  <div class="row justify-content-center mt-5 pb-4">
+    <div class="col-md-12">
+      <div class="card shadow p-5 mb-5 bg-light">
 
-            <h1 class="display-4">Find our Event</h1>
+        <h1 class="display-4">Find our Event</h1>
 
 
-            <form class="form-inline d-flex flex-nowrap" action=" {{url_for('main.seach)}}">
-              <input type="text" name="seach"
-              class="form-control flex-grow-1 my-1 mr-sm-2" id="'Search Events">
-              <button type="submit" class="flex-shrink-1 btn btn-primary my-1">Submit</button>
-            </form>
+        <form class="form-inline d-flex flex-nowrap" action=" {{url_for(main.search)}}">
+          <input type="text" name="seach" class="form-control flex-grow-1 my-1 mr-sm-2" id="Search Events">
+          <button type="submit" class="flex-shrink-1 btn btn-primary my-1">Submit</button>
+        </form>
 
-          </div>
-        </div>
       </div>
     </div>
+  </div>
+</div>
 {% endblock %}
 
 
 {% block content %}
 
-<a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Add new event">
-    <hover-button>+</hover-button>
-</a>
 <div class="row" style="margin-left: unset;margin-right: unset;">
-    {% for event in events %}
-    <event-card class="col-sm-6 col-lg-4">
-        <div class="card">
-            <div class="card-title">
-                <h4>{{ event.cuisine.name }}</h4>
-                <h4><i class="status">{{ event.status }}</i></h4>
-                <!--changed to event.status-->
-            </div>
-            <div class="card-text">
-                <div class="img-vert-container">
-                    <a href="#">
-                        <img src="{{ event.image }}" />
-                        <span>{{ event.description }}</span>
-                    </a>
-                    <div class="bi bi-chevron-down event-expand" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#event1" aria-expanded="false" aria-controls="event1">
-                    </div>
-                </div>
-                <div class="collapse" id="event1">
-                    <ul>
-                        <li>Price: <i>{{ event.ticket_price }}</i></li>
-                        <li>Location: <i>{{ event.capacity }}</i></li>
-                        <li>DateTime: <i>{{ event.time }}</i></li>
-                    </ul>
-                </div>
-            </div>
+  {% for event in events %}
+  <event-card class="col-sm-6 col-lg-4">
+    <div class="card">
+      <div class="card-title">
+        <h4>{{ event.cuisine.name }}</h4>
+        <h4><i class="status">{{ event.status }}</i></h4>
+        <!--changed to event.status-->
+      </div>
+      <div class="card-text">
+        <div class="img-vert-container">
+          <a href=meal/{{id_to_string(event.id)}}>
+            <img src=data:image;base64,{{b64(event.image)}} />
+            <span>{{ event.description }}</span>
+          </a>
+          <div class="bi bi-chevron-down event-expand" type="button" data-bs-toggle="collapse" data-bs-target="#abc{{id_to_string(event.id)}}"
+            aria-expanded="false" aria-controls="abc{{id_to_string(event.id)}}">
+          </div>
         </div>
-    </event-card>
-    {% endfor %}
+        <div class="collapse" id="abc{{id_to_string(event.id)}}">
+          <ul>
+            <li>Price: <i>{{ event.ticket_price }}</i></li>
+            {% if current_user in event.attendees.all() %}
+            <li>Location: <i>{{ event.address }}</i></li>
+            {% else %}
+            <li>Location: <i>{{ event.coarse_location }}</i></li>
+            {% endif %}
+            <li>DateTime: <i>{{ event.time }}</i></li>
+            <li>Available tickets: <i>{{event.capacity - event.attendees.count()}}</i></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </event-card>
+  {% endfor %}
 </div>
 {% endblock %}

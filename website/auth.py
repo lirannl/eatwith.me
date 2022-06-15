@@ -46,14 +46,14 @@ def register():
         if User.query.filter_by(username=request.form["username"]).first() is not None:
             flash("Username already exists")
             return redirect(request.origin)
-        db.session.add(User(
-            request.form["username"], request.form["name"], request.form["contact_number"]))
-        newUser: User = User.query.where(
-            User.username == request.form["username"]).first()
+        newUser = User(request.form["username"], request.form["name"],
+                       request.form["contact_number"])
+        db.session.add(newUser)
         newUser.set_password(request.form["password"])
         try:
             db.session.commit()
         except Exception as e:
-            print(e.with_traceback())
+            print("\n".join(e.args))
+            return abort(400, "\n".join(e.args))
         return redirect("/")
     return render_template("register.html", form=RegisterForm())

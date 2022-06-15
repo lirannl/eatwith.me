@@ -53,10 +53,6 @@ def create_app():
     from . import meal
     app.register_blueprint(meal.bp)
 
-    #create book import
-    from . import book
-    app.register_blueprint(book.bp)
-
     # Error handling general error messages
     @app.errorhandler(404)  # not found
     def not_found(e):
@@ -70,12 +66,16 @@ def create_app():
     def not_found(e):
         return render_template("error.html", errortype="401")
 
+    @app.errorhandler(400)  # if your request was invalid
+    def invalid(e):
+        return render_template("error.html", error_message=e.description, errortype="400")
+
     @app.errorhandler(500)  # server error
     def not_found(e):
         return render_template("error.html", errortype="500")
 
     @app.before_first_request
     def create_tables():
-        db.create_all()
+        db.metadata.create_all(db.engine)
 
     return app

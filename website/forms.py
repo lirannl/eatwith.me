@@ -1,10 +1,10 @@
 
+from datetime import datetime
 from flask_wtf import FlaskForm
-from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, FileField, IntegerField, DateTimeField, FloatField
-from wtforms.validators import InputRequired, Length, Email, EqualTo
+from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, FileField
+from wtforms.fields.html5 import DateTimeLocalField, IntegerField, DecimalField
+from wtforms.validators import InputRequired, Length, Email, EqualTo, NumberRange
 from flask_wtf.file import FileRequired, FileField, FileAllowed
-
-ALLOWED_FILE = {'PNG', 'JPG', 'png', 'jpg'}
 
 
 # creates the login information
@@ -36,28 +36,37 @@ class MealForm(FlaskForm):
                                 validators=[InputRequired()])
     image = FileField('Meal image', validators=[
         FileRequired(message='Image cannot be empty'),
-        FileAllowed(ALLOWED_FILE, message='Only supports png,jpg,JPG,PNG')
+        FileAllowed({'PNG', 'JPG', 'png', 'jpg'},
+                    message='Only supports png,jpg,JPG,PNG')
     ])
     address = StringField('Address', validators=[InputRequired()])
-    time = StringField('Time', validators=[InputRequired()])
+    time = DateTimeLocalField('Time', validators=[InputRequired()])
     coarse_location = StringField(
         'Coarse location', validators=[InputRequired()])
-    capacity = IntegerField('Capacity', validators=[InputRequired()])
+    capacity = IntegerField('Capacity', validators=[InputRequired(), NumberRange(min=1, message="Must have some capacity")])
     cuisine = StringField('Cuisine', validators=[InputRequired()])
-    ticket_price = FloatField('Ticket Price', validators=[InputRequired()])
-    submit = SubmitField("Create")
-
-
-    # Book form
-class BookForm(FlaskForm):
-        # within the validator make sure the amount is > 0
-    name = StringField('Description of event', validators=[InputRequired()])
-    ticket = IntegerField('Amount of tickets', validators=[InputRequired()])
+    ticket_price = DecimalField('Ticket Price', validators=[InputRequired()])
     submit = SubmitField("Submit")
 
-    
+    # def populate_obj(self, obj):
+    #     self.description.data = obj.description
+    #     self.address.data = obj.address
+    #     self.capacity.data = obj.capacity
+    #     self.cuisine.data = obj.cuisine.name
+    #     self.time.data = obj.time
+    #     self.coarse_location.data = obj.coarse_location
+    #     self.ticket_price.data = obj.ticket_price
+
+
+
+class DelForm(FlaskForm):
+    # within the validator make sure the amount is > 0
+    name = StringField('Description of event', validators=[InputRequired()])
+    submit = SubmitField("Submit")
+
     # Comment form
+
+
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment', validators=[InputRequired()])
     submit = SubmitField("Submit")
-
