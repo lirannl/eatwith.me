@@ -65,6 +65,10 @@ event-card.view {
     line-height: 0.5;
 }
 
+.btn {
+    text-align: center;
+}
+
 body:not(#event-view) .card-title {
     margin-left: 8pt;
     display: flex;
@@ -75,7 +79,7 @@ body:not(#event-view) .card-title {
 
 .container-fluid {
     max-height: 100%;
-    overflow: auto;
+    overflow: visible;
 }
 
 .tab-content {
@@ -232,8 +236,13 @@ comments-section .comment>.comment {
     flex-direction: column;
 }
 
-input[type="file"] {
+input[type="file"],
+.hidden {
     display: none;
+}
+
+.nav-link {
+    cursor: pointer;
 }
 
 .flex {
