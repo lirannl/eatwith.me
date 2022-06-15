@@ -7,10 +7,14 @@ from typing import Optional
 from . import db
 
 
+def random_id():
+    return Random().randbytes(16)
+
+
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id: bytes = db.Column(db.BLOB(16), primary_key=True,
-                          default=Random().randbytes(16))
+                          default=random_id)
     username: str = db.Column(
         db.String(256), index=True, unique=True)
     salt: bytes = db.Column(db.BLOB(16))
@@ -38,15 +42,16 @@ class User(db.Model, UserMixin):
 class Cuisine(db.Model):
     __tablename__ = 'cuisines'
     id: bytes = db.Column(db.BLOB(16), primary_key=True,
-                          default=Random().randbytes(16))
+                          default=random_id)
     name: str = db.Column(db.String(256), index=True,
                           unique=True)
     # events: list = db.relationship('Event', backref='cuisine', lazy='dynamic')
 
+
 class Attribute(db.Model):
     __tablename__ = 'attributes'
     id: bytes = db.Column(db.BLOB(16), primary_key=True,
-                          default=Random().randbytes(16))
+                          default=random_id)
     name: str = db.Column(db.String(256), index=True,
                           unique=True)
     # events: list = db.relationship(
@@ -56,13 +61,14 @@ class Attribute(db.Model):
 class Comment(db.Model):
     __tablename__ = 'comments'
     id: bytes = db.Column(db.BLOB(16), primary_key=True,
-                          default=Random().randbytes(16))
+                          default=random_id)
     eventId: bytes = db.Column(db.BLOB(16), db.ForeignKey('events.id'))
     # event = db.relationship('Event', backref='comments', lazy='dynamic')
     creation_time: datetime = db.Column(db.DateTime, default=datetime.utcnow)
     content = db.Column(db.String(16384))
     commenterId = db.Column(db.BLOB(16), db.ForeignKey('users.id'))
     commenter = db.relationship('User', backref='comments')
+
     def __init__(self, content: str, commenter: User, event: any):
         self.content = content
         self.commenter = commenter
@@ -70,17 +76,16 @@ class Comment(db.Model):
         self.creation_time = datetime.now()
 
 
-
 class Event(db.Model):
     __tablename__ = 'events'
     id: bytes = db.Column(db.BLOB(16), primary_key=True,
-                          default=Random().randbytes(16))
+                          default=random_id)
     cuisineId: bytes = db.Column(db.BLOB(16), db.ForeignKey('cuisines.id'))
     cuisine: Cuisine = db.relationship(
         'Cuisine', backref='events')
     hostId: bytes = db.Column(db.BLOB(16), db.ForeignKey('users.id'))
-    # host: User = db.relationship(
-    #     'User', backref=backref('events', lazy='dynamic'))
+    host: User = db.relationship(
+        'User')
     attendees: list[User] = db.relationship('User',
                                             secondary='attendees',
                                             backref='events', lazy='dynamic')
@@ -112,6 +117,9 @@ class Event(db.Model):
     comments: list[Comment] = db.relationship('Comment',
                                               backref='event', lazy='dynamic')
 
+    def is_attending(self, user: User):
+        return self.attendees.filter(User == user).count() > 0
+
     def __init__(self, time: datetime, address: str, coarse_location: str, description: str, capacity: int, cuisine: Cuisine, ticket_price: float, image: bytes, host: User):
         self.time = time
         self.image = image
@@ -134,7 +142,7 @@ class Event(db.Model):
 #                             )
 attendees = db.Table('attendees', db.metadata,
                      db.Column('id', db.BLOB(16), primary_key=True,
-                               default=Random().randbytes(16)),
+                               default=random_id),
                      db.Column('eventId', db.BLOB(16),
                                db.ForeignKey('events.id')),
                      db.Column('userId', db.BLOB(16),

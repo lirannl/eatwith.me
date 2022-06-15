@@ -5,7 +5,11 @@
 <!--Creating the container that holds the error message with relevent message-->
 <div class="container">
     <h1>A {{errortype}} error has occured</h1>
+    {% if error_message != None %}
+    <p>{{error_message}}</p>
+    {% else %}
     <p>Oops, something went wrong. Please try again</p>
+    {% endif %}
     <a href="/">Return to homepage</a>
 </div>
 

@@ -15,14 +15,32 @@
             </div>
             <ul>
                 <li>Price: <i>{{event.ticket_price}}</i></li>
-                <li>Location: <i>{{event.location}}</i></li>
+                {% if current_user in event.attendees.all() %}
+                <li>Oragniser's contact number:  <i>{{ event.host.contact_number }}</i></li>
+                <li>Location: <i>{{ event.address }}</i></li>
+                {% else %}
+                <li>Location: <i>{{ event.coarse_location }}</i></li>
+                {% endif %}
                 <li>Time: <i>{{event.time}} </i></li>
+                <li>Available tickets: <i>{{event.capacity - event.attendees.count()}}</i></li>
             </ul>
-            <a href="event.html">
-                <button class="btn btn-primary">Book Event</button>
-            </a>
+            {% if event.status == "Upcoming" and current_user.is_authenticated and event.host != current_user %}
+            <form action="{{id_to_string(event.id)}}/book" method="POST">
+                <label for="booking-amount">Amount:</label> <input type="number" id="booking-amount" name="amount"
+                    value="1" min="1" max="{{event.capacity - event.attendees.count() }}"></input>
+                <button type="submit" class="btn btn-primary">Book Event</button>
+            </form>
+            {% endif %}
         </div>
     </div>
+    {% if event.host == current_user and event.isActive %}
+    <br />
+    <span>
+        <form action="/meal/{{id_to_string(event.id)}}/deactivate" method="post">
+            <button class="btn btn-primary">Deactivate</button>
+        </form>
+    </span>
+    {% endif %}
 </event-card>
 </div>
 

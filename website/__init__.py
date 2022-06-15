@@ -66,6 +66,10 @@ def create_app():
     def not_found(e):
         return render_template("error.html", errortype="401")
 
+    @app.errorhandler(400)  # if your request was invalid
+    def invalid(e):
+        return render_template("error.html", error_message=e.description, errortype="400")
+
     @app.errorhandler(500)  # server error
     def not_found(e):
         return render_template("error.html", errortype="500")

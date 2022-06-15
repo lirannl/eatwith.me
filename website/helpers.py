@@ -1,6 +1,6 @@
 # Helper functions
 
-from base64 import b32decode, b32encode
+from base64 import b32decode, b32encode, b64encode
 from website.models import Cuisine
 from . import db
 
@@ -29,3 +29,7 @@ def get_cuisine(name: str):
         db.session.add(cuisine)
         db.session.commit()
     return cuisine
+
+
+def b64(b):
+    return b64encode(b).decode()

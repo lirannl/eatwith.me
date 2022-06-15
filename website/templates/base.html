@@ -15,7 +15,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light" id="se-nav">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="/">
         <img class="logo" src="{{ url_for('static', filename='img/logo.png') }}" />
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
@@ -27,24 +27,26 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/">Homepage</a>
           </li>
+          {% if cuisines != None %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="nav-cuisines" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
               Cuisines
             </a>
             <ul class="dropdown-menu" aria-labelledby="nav-cuisines">
-              <li><a class="dropdown-item" href="#">All</a></li>
+              <li><a class="dropdown-item" href="/">All</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
               {% for cuisine in cuisines %}
               <li>
-                <div class="dropdown-item">{{cuisine.name}}</div>
+                <a href="{{cuisine.name}}" class="dropdown-item">{{cuisine.name}}</a>
               </li>
               {% endfor %}
 
             </ul>
           </li>
+          {% endif %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="nav-meals" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
@@ -57,11 +59,15 @@
           </li>
           {% if current_user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="nav-logout" role="button" data-bs-toggle="dropdown"
+            <span class="nav-link dropdown-toggle" id="nav-logout" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
               {{current_user.name}}
-            </a>
-            <label for="logout-button" type="submit" class="btn btn-primary dropdown-menu" aria-labelledby="nav-logout">Logout</label>
+            </span>
+            <ul class="dropdown-menu" aria-labelledby="nav-logout">
+              <li><a class="dropdown-item" href="/my_events">My events</a></li>
+              <li><label for="logout-button" type="submit" class="dropdown-item"
+                aria-labelledby="nav-logout">Logout</label></li>
+            </ul>
             <form class="hidden" action="/logout" method="POST">
               <button id="logout-button" type="submit"></button>
             </form>
@@ -103,8 +109,8 @@
           </li>
           {% endif %}
         </ul>
-        <form class="d-flex" action="/search" method="POST">
-          <input class="form-control me-2" type="search" placeholder="Event Name ..." aria-label="Search">
+        <form class="d-flex" action="/search">
+          <input name="query" class="form-control me-2" type="search" placeholder="Event Name ..." aria-label="Search">
           <button class="btn btn-success" type="submit">Search</button>
         </form>
       </div>

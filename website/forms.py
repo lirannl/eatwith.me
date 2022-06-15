@@ -1,8 +1,8 @@
 
 from flask_wtf import FlaskForm
-from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, FileField, FloatField
-from wtforms.fields.html5 import DateTimeLocalField, IntegerField
-from wtforms.validators import InputRequired, Length, Email, EqualTo
+from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, FileField
+from wtforms.fields.html5 import DateTimeLocalField, IntegerField, DecimalField
+from wtforms.validators import InputRequired, Length, Email, EqualTo, NumberRange
 from flask_wtf.file import FileRequired, FileField, FileAllowed
 
 
@@ -29,37 +29,33 @@ class RegisterForm(FlaskForm):
 
 # Create/Update new meal
 
+
 class MealForm(FlaskForm):
     description = TextAreaField('Description',
                                 validators=[InputRequired()])
     image = FileField('Meal image', validators=[
         FileRequired(message='Image cannot be empty'),
-        FileAllowed({'PNG', 'JPG', 'png', 'jpg'}, message='Only supports png,jpg,JPG,PNG')
+        FileAllowed({'PNG', 'JPG', 'png', 'jpg'},
+                    message='Only supports png,jpg,JPG,PNG')
     ])
     address = StringField('Address', validators=[InputRequired()])
     time = DateTimeLocalField('Time', validators=[InputRequired()])
     coarse_location = StringField(
         'Coarse location', validators=[InputRequired()])
-    capacity = IntegerField('Capacity', validators=[InputRequired()])
+    capacity = IntegerField('Capacity', validators=[InputRequired(), NumberRange(min=1, message="Must have some capacity")])
     cuisine = StringField('Cuisine', validators=[InputRequired()])
-    ticket_price = FloatField('Ticket Price', validators=[InputRequired()])
+    ticket_price = DecimalField('Ticket Price', validators=[InputRequired()])
     submit = SubmitField("Create")
 
-    # Book form
-class BookForm(FlaskForm):
-        # within the validator make sure the amount is > 0
-    name = StringField('Description of event', validators=[InputRequired()])
-    ticket = IntegerField('Amount of tickets', validators=[InputRequired()])
-    submit = SubmitField("Submit")
 
 class DelForm(FlaskForm):
-        # within the validator make sure the amount is > 0
+    # within the validator make sure the amount is > 0
     name = StringField('Description of event', validators=[InputRequired()])
     submit = SubmitField("Submit")
 
-    
     # Comment form
+
+
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment', validators=[InputRequired()])
     submit = SubmitField("Submit")
-

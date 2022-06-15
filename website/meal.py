@@ -9,7 +9,7 @@ from . import db
 import os
 from werkzeug.utils import secure_filename
 from flask_login import current_user, login_required
-from website.helpers import get_cuisine, id_to_string, string_to_id
+from website.helpers import b64, get_cuisine, id_to_string, string_to_id
 from typing import Optional
 
 bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder='/meal')
@@ -28,7 +28,7 @@ def create():
     description: str = request.form["description"]
     capacity = int(request.form["capacity"])
     cuisine = get_cuisine(request.form["cuisine"])
-    ticket_price = int(request.form["ticket_price"])
+    ticket_price = float(request.form["ticket_price"])
     image = request.files["image"]
     host: User = current_user
     event = Event(
@@ -153,6 +153,26 @@ def check_upload_file(form):
 #         return redirect(url_for('meal.event', id=id_to_string(event_obj.id)))
 #     return render_template('event/event.html', website=event_obj, form=form)
 
+@bp.route('/<id>/book', methods=["POST"])
+def book(id: str):
+    event: Event = Event.query.get(string_to_id(id))
+    amount: int = int(request.form["amount"])
+    if event is None:
+        return abort(404)
+    if (event.capacity - event.attendees.count()) < amount:
+        return abort(400)
+    event.attendees.extend([current_user] * amount)
+    db.session.commit()
+    return redirect(request.referrer)
+
+@bp.route('<id>/cancel', methods=["POST"])
+def cancel(id: str):
+    event: Event = Event.query.get(string_to_id(id))
+    if event is None:
+        return abort(404)
+    event.isActive = False
+    db.session.commit()
+    return redirect(request.referrer)
 
 @bp.route('/<id>', methods=["GET", "POST"])
 def show(id: str):
@@ -162,10 +182,7 @@ def show(id: str):
     if (request.method == "POST"):
         comment = Comment(request.form["comment"],
                           current_user, event)
-        comment.id = Random().randbytes(n=16)
         db.session.add(comment)
         db.session.commit()
         return redirect(url_for('meal.show', id=id))
-    return render_template("event/index.html", event=event, form=CommentForm(),
-                           # base64 decoder
-                           b64=lambda b: base64.b64encode(b).decode())
+    return render_template("event/index.html", event=event, form=CommentForm(),b64=b64, id_to_string=id_to_string)
