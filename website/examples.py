@@ -8,13 +8,6 @@ from . import db
 # These are simply examples and should not be imported
 
 
-def get_cuisine(name: str):
-    cuisine = Cuisine.query.filter_by(name=name).first()
-    if cuisine is None:
-        db.session.add(Cuisine(name=name))
-        db.session.commit()
-        cuisine = Cuisine.query.filter_by(name=name).first()
-    return cuisine
 
 
 def create_event():

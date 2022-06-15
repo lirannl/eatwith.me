@@ -1,26 +1,66 @@
-<event-card class="col-sm-6 col-lg-4">
-    <div class="card">
-      <div class="card-title">
-        <h4>{{ event.cuisine.name }}</h4>
-        <h4><i class="status">{{ event.status }}</i></h4><!--changed to event.status-->
-      </div>
-      <div class="card-text">
-        <div class="img-vert-container">
-          <a href="#">
-            <img src="{{ event.image }}" />
-            <span>{{ event.description }}</span>
-          </a>
-          <div class="bi bi-chevron-down event-expand" type="button" data-bs-toggle="collapse"
-            data-bs-target="#event1" aria-expanded="false" aria-controls="event1">
-          </div>
-        </div>
-        <div class="collapse" id="event1">
-          <ul>
-            <li>Price: <i>{{ event.ticket_price }}</i></li>
-            <li>Location: <i>{{ event.capacity }}</i></li>
-            <li>DateTime: <i>{{ event.time }}</i></li>
-          </ul>
-        </div>
-      </div>
+{% include 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block content %}
+
+<body>
+    <div class="content">
+        <a href="index.html"><b class="bi bi-arrow-left">Browse all events</b></a>
+        <event-card>
+            <div class="card">
+                <div class="card-title">
+                    <h4>{{event.cuisine.name}}</h4>
+                    <h4><i class="status">{{event.status}}</i></h4>
+                </div>
+                <div class="card-text">
+                    <div class="img-vert-container">
+                        <a href="event.html">
+                            <img src="img/ragu.jpg" />
+                            <span>{{event.description}}</span>
+                        </a>
+                    </div>
+                    <ul>
+                        <li>Price: <i>{{event.ticket_price}}</i></li>
+                        <li>Location: <i>{{event.location}}</i></li>
+                        <li>Time: <i>{{event.time}} </i></li>
+                    </ul>
+                    <a href="event.html">
+                        <button class="btn btn-primary">Book Event</button>
+                    </a>
+                </div>
+            </div>
+        </event-card>
     </div>
-  </event-card>
+
+    <hr>
+    <!--comment-->
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Comments</h2>
+        </div>
+    </div>
+
+    <div class="row border-bottom">
+        {% for comment in comments %}
+        <div class="col-md-12">
+            <b>{{comment.user.name}} <span class="ml-2 text-muted">{{comment.created_at}}</span></b>
+            <p>{{comment.content}}</p>
+            <!-- <p>{{comment.text}}</p> -->
+        </div>
+        {% endfor %}
+        {% endblock %}
+    </div>
+    </div>
+
+    <footer class="footer">
+        <div class="text-center py-2 bg-light">
+            <span class="text-dark">Copyright &copy; 2022</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>

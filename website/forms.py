@@ -1,10 +1,9 @@
 
 from flask_wtf import FlaskForm
-from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, FileField, IntegerField, DateTimeField, FloatField
+from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, FileField, FloatField
+from wtforms.fields.html5 import DateTimeLocalField, IntegerField
 from wtforms.validators import InputRequired, Length, Email, EqualTo
 from flask_wtf.file import FileRequired, FileField, FileAllowed
-
-ALLOWED_FILE = {'PNG', 'JPG', 'png', 'jpg'}
 
 
 # creates the login information
@@ -30,23 +29,21 @@ class RegisterForm(FlaskForm):
 
 # Create/Update new meal
 
-
 class MealForm(FlaskForm):
     description = TextAreaField('Description',
                                 validators=[InputRequired()])
     image = FileField('Meal image', validators=[
         FileRequired(message='Image cannot be empty'),
-        FileAllowed(ALLOWED_FILE, message='Only supports png,jpg,JPG,PNG')
+        FileAllowed({'PNG', 'JPG', 'png', 'jpg'}, message='Only supports png,jpg,JPG,PNG')
     ])
     address = StringField('Address', validators=[InputRequired()])
-    time = StringField('Time', validators=[InputRequired()])
+    time = DateTimeLocalField('Time', validators=[InputRequired()])
     coarse_location = StringField(
         'Coarse location', validators=[InputRequired()])
     capacity = IntegerField('Capacity', validators=[InputRequired()])
     cuisine = StringField('Cuisine', validators=[InputRequired()])
     ticket_price = FloatField('Ticket Price', validators=[InputRequired()])
     submit = SubmitField("Create")
-
 
     # Book form
 class BookForm(FlaskForm):

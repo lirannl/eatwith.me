@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for
 from .models import Comment, Cuisine, Event, User
 from .forms import MealForm, RegisterForm, CommentForm
@@ -5,43 +6,37 @@ from . import db
 import os
 from werkzeug.utils import secure_filename
 from flask_login import current_user, login_required
-from website.helpers import id_to_string, string_to_id
+from website.helpers import get_cuisine, id_to_string, string_to_id
 from typing import Optional
 
-bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder = '/meal')
+bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder='/meal')
 
-#Stroing the db information once user creates a meal
-@bp.route('/<id>')
-def show(id):
-    event = Event.query.filter_by(id=id).first
-    comments = Comment.query.all()
-    return render_template("event/my-event.html", event=event, comments=comments)
-    
+# Stroing the db information once user creates a meal
+
+
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
-    print('Method type: ', request.method)
-    form = MealForm()
-    if form.validate_on_submit():
-        # call the function that checks and returns image
-        db_file_path = check_upload_file(form)
-        cuisine = Cuisine.query.where(Cuisine.name.lower() ==
-                                      request.form.cuisine.lower().trim()).first()
-        if cuisine is None:
-            db.session.add(Cuisine(name=(request.form.cuisine.lower()).trim()))
-            # Get the newly created cuisine
-            cuisine = Cuisine.query.where(Cuisine.name.lower() ==
-                                          request.form.cuisine.lower().trim()).first()
-        meal = Event(name=form.name.data, cuisine=cuisine, host=current_user, description=form.description.data,
-                     image=db_file_path)
-        # add the object to the db session
-        db.session.add(meal)
-        # commit to the database
-        db.session.commit()
-        print('Successfully created new meal')
-        # Always end with redirect when form is valid
-        return redirect(url_for('meal.create'))
-    return render_template('event/create.html', form=form)
+    if (request.method != 'POST'):
+        return render_template('event/create.html', form=MealForm())
+    time: datetime = datetime.fromisoformat(request.form["time"])
+    address: str = request.form["address"]
+    coarse_location: str = request.form["coarse_location"]
+    description: str = request.form["description"]
+    capacity = int(request.form["capacity"])
+    cuisine = get_cuisine(request.form["cuisine"])
+    ticket_price = int(request.form["ticket_price"])
+    image = request.files["image"]
+    host: User = current_user
+    event = Event(
+        time, address, coarse_location,
+        description, capacity, cuisine,
+        ticket_price, image.stream.read(), host
+    )
+    db.session.add(event)
+    db.session.commit()
+    return redirect(f"/meal/{id_to_string(event.id)}")
+
 
 # 1. There should be a page showing all the event and for each 'view detail' it redirect to a page with the end point of event id /<event_id>
 # 2. When user click on update button the event id should be passed into the 'update' end point where we just have to find the event with the matching eventid that we passeed in, and update it using mealform
@@ -90,7 +85,9 @@ def check_upload_file(form):
     return db_upload_path
 
 # adding the Comment Form
-@bp.route('/comment/<id>', methods=['GET', 'POST'])
+
+
+@bp.route('<id>/comment', methods=['GET', 'POST'])
 @login_required
 def comment(id: str):
     form = CommentForm()
@@ -105,4 +102,10 @@ def comment(id: str):
 
         return redirect(url_for('meal.event', id=id_to_string(event_obj.id)))
     return render_template('event/event.html', website=event_obj, form=form)
-   
+
+
+@bp.route('/<id>')
+def show(id: str):
+    event = Event.query.get(string_to_id(id))
+    comments = Comment.query.all()
+    return render_template("event/index.html", event=event, comments=comments)

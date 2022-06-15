@@ -1,6 +1,8 @@
 # Helper functions
 
 from base64 import b32decode, b32encode
+from website.models import Cuisine
+from . import db
 
 
 def id_to_string(id: bytes) -> str:
@@ -18,3 +20,12 @@ def string_to_id(string: str) -> bytes:
             else:
                 raise e
     return id
+
+
+def get_cuisine(name: str):
+    cuisine = Cuisine.query.filter_by(name=name).first()
+    if cuisine is None:
+        cuisine = Cuisine(name=name)
+        db.session.add(cuisine)
+        db.session.commit()
+    return cuisine
