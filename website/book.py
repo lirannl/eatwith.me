@@ -30,11 +30,11 @@ def create():
                                         request.form.name.lower().trim()).first()
             if selected_event is not None:
                 if selected_event.capacity >=request.form.ticket:
-                    print('Place holder for booked out')
+                    print('Booked out')
                     #Make a booking table where you store the ticket amount,event id,cost in total,booking_id
                 
                 elif selected_event.capacity<= request.form.ticket:
-                    print('Place holder for commiting all those changes')
+                    print('Commiting all changes')
                     #reutrn to user say order being place and return order if for reference
         except:
             print('cant find the matching database')
@@ -55,5 +55,3 @@ def create():
         # # Always end with redirect when form is valid
         return redirect(url_for('meal.create'))
     return render_template('event/create.html', form=form)
-
-# adding the check upload file form
