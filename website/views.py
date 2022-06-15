@@ -1,6 +1,7 @@
 from flask import Blueprint, abort, redirect, request, url_for
 from flask import render_template
-from flask_login import current_user
+from flask_login import current_user, login_required
+import flask_login
 from website.helpers import b64, id_to_string
 from . import db
 
@@ -24,6 +25,7 @@ def search():
 
 
 @bp.route('/my_events')
+@login_required
 def my_events():
     return render_template('index.html', cuisines=Cuisine.query.all(), events=current_user.events, b64=b64, id_to_string=id_to_string)
 

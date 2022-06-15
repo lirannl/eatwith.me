@@ -1,4 +1,5 @@
 
+from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, FileField
 from wtforms.fields.html5 import DateTimeLocalField, IntegerField, DecimalField
@@ -45,7 +46,17 @@ class MealForm(FlaskForm):
     capacity = IntegerField('Capacity', validators=[InputRequired(), NumberRange(min=1, message="Must have some capacity")])
     cuisine = StringField('Cuisine', validators=[InputRequired()])
     ticket_price = DecimalField('Ticket Price', validators=[InputRequired()])
-    submit = SubmitField("Create")
+    submit = SubmitField("Submit")
+
+    # def populate_obj(self, obj):
+    #     self.description.data = obj.description
+    #     self.address.data = obj.address
+    #     self.capacity.data = obj.capacity
+    #     self.cuisine.data = obj.cuisine.name
+    #     self.time.data = obj.time
+    #     self.coarse_location.data = obj.coarse_location
+    #     self.ticket_price.data = obj.ticket_price
+
 
 
 class DelForm(FlaskForm):

@@ -41,30 +41,39 @@ def create():
     return redirect(f"/meal/{id_to_string(event.id)}")
 
 
-@bp.route('/update', methods=['GET', 'POST'])
+@bp.route('<id>/update', methods=['GET', 'POST'])
 @login_required
-def update():
-    print('Method type: ', request.method)
+def update(id: str):
+    if (request.method == 'POST'):
+        time: datetime = datetime.fromisoformat(request.form["time"])
+        address: str = request.form["address"]
+        coarse_location: str = request.form["coarse_location"]
+        description: str = request.form["description"]
+        capacity = int(request.form["capacity"])
+        cuisine = get_cuisine(request.form["cuisine"])
+        ticket_price = float(request.form["ticket_price"])
+        image = request.files["image"]
+        host: User = current_user
+        event = Event(
+            time, address, coarse_location,
+            description, capacity, cuisine,
+            ticket_price, image.stream.read(), host
+        )
+        event.time = time
+        event.address = address
+        event.coarse_location = coarse_location
+        event.description = description
+        event.capacity = capacity
+        event.cuisine = cuisine
+        event.ticket_price = ticket_price
+        if image is not None:
+            event.image = image.stream.read()
+        event.host = host
+        db.session.commit() 
     form = MealForm()
-    if form.validate_on_submit():
-        # call the function that checks and returns image
-        db_file_path = check_upload_file(form)
-        updatevent = Event.query.where(Event.description ==
-                                       request.form['name'].lower()).first()
-
-        meal = Event(cuisine=cuisine, host=current_user, description=str(request.form['description']), time=str(request.form['time']), address=str(request.form['address']), coarse_location=str(
-            request.form['coarse_location']), capacity=int(request.form['capacity']), ticket_price=float(request.form['ticket_price']), image=db_file_path)
-        # Update the table with updatevent(have to make it an Event class)
-
-        # add the object to the db session
-        db.session.update(meal)
-
-        # commit to the database
-        db.session.commit()
-        print('Successfully updated the meal')
-        # Always end with redirect when form is valid
-        return redirect(url_for('meal.update'))
-    return render_template('event/update.html', form=form)
+    event: Event = Event.query.get(string_to_id(id))
+    form.populate_obj(event)
+    return render_template('event/create.html', form=form, event=event)
 
 
 @bp.route('/delmeal', methods=['GET', 'POST'])
@@ -91,33 +100,6 @@ def delmeal():
     return render_template('event/delmeal.html', form=form)
 # 1. There should be a page showing all the event and for each 'view detail' it redirect to a page with the end point of event id /<event_id>
 # 2. When user click on update button the event id should be passed into the 'update' end point where we just have to find the event with the matching eventid that we passeed in, and update it using mealform
-
-# @bp.route('/detail/<id>', methods=['GET', 'POST'])
-# @login_required
-# def create():
-#   print('Method type: ', request.method)
-#   form = MealForm()
-#   if form.validate_on_submit():
-#     print('place holder')
-#       # get event id from detail endpoint
-#       #need to find the match inside of the database inorder to update
-
-#   return render_template('event/detail.html', form=form)
-
-# #adding update login
-# @bp.route('/update', methods=['GET', 'POST'])
-# @login_required
-# def create():
-#   print('Method type: ', request.method)
-#   form = MealForm()
-#   if form.validate_on_submit():
-#     print('place holder')
-#       # get event id from detail endpoint
-#       #need to find the match inside of the database inorder to update
-
-#   return render_template('event/update.html', form=form)
-
-# adding the check upload file form
 
 
 def check_upload_file(form):
@@ -165,6 +147,7 @@ def book(id: str):
     db.session.commit()
     return redirect(request.referrer)
 
+
 @bp.route('<id>/cancel', methods=["POST"])
 def cancel(id: str):
     event: Event = Event.query.get(string_to_id(id))
@@ -173,6 +156,7 @@ def cancel(id: str):
     event.isActive = False
     db.session.commit()
     return redirect(request.referrer)
+
 
 @bp.route('/<id>', methods=["GET", "POST"])
 def show(id: str):
@@ -185,4 +169,4 @@ def show(id: str):
         db.session.add(comment)
         db.session.commit()
         return redirect(url_for('meal.show', id=id))
-    return render_template("event/index.html", event=event, form=CommentForm(),b64=b64, id_to_string=id_to_string)
+    return render_template("event/index.html", event=event, form=CommentForm(), b64=b64, id_to_string=id_to_string)

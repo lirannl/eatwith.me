@@ -35,6 +35,7 @@
     </div>
     {% if event.host == current_user and event.isActive %}
     <br />
+    <a href="{{id_to_string(event.id)}}/update"><button class="btn btn-primary">Update</button></a>
     <span>
         <form action="/meal/{{id_to_string(event.id)}}/deactivate" method="post">
             <button class="btn btn-primary">Deactivate</button>

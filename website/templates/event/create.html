@@ -1,7 +1,14 @@
 {% include "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-<h1>Fill in form</h1>
 {% block body %}
+<h1>
+    {% if event is not defined %}
+    Create 
+    {% else %}
+    Update
+    {% endif %}
+    an event
+</h1>
 {{ wtf.quick_form(form) }}
 {% endblock %}
 
