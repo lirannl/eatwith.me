@@ -15,20 +15,23 @@
             </div>
             <ul>
                 <li>Price: <i>{{event.ticket_price}}</i></li>
-                {% if current_user in event.attendees.all() %}
-                <li>Oragniser's contact number:  <i>{{ event.host.contact_number }}</i></li>
+                {% if current_user in event.attendees.all() or event.host == current_user %}
+                <li>Oragniser's contact number: <i>{{ event.host.contact_number }}</i></li>
                 <li>Location: <i>{{ event.address }}</i></li>
                 {% else %}
                 <li>Location: <i>{{ event.coarse_location }}</i></li>
                 {% endif %}
-                <li>Time: <i>{{event.time}} </i></li>
+                <li>At: <i>{{event.time}} </i></li>
+                {% if current_user in event.attendees.all() %}
+                <li>Tickets purchased by you: <i>{{ event.attendees.filter_by(id=current_user.id).count() }}</i></li>
+                {% endif %}
                 <li>Available tickets: <i>{{event.capacity - event.attendees.count()}}</i></li>
             </ul>
             {% if current_user.is_authenticated and event.host == current_user %}
-            Attendees: 
+            Attendees:
             <ul>
                 {% for attendee in event.attendees %}
-                <li>{{attendee.name}}, email: {{attendee.username}}, phone number: {{attendee.contact_number}}, 
+                <li>{{attendee.name}}, email: {{attendee.username}}, phone number: {{attendee.contact_number}},
                     tickets purchased: {{event.attendees.filter_by(id=attendee.id).count()}}</li>
                 {% endfor %}
             </ul>

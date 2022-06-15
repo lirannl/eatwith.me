@@ -48,14 +48,14 @@
         <div class="collapse" id="abc{{id_to_string(event.id)}}">
           <ul>
             <li>Price: <i>{{ event.ticket_price }}</i></li>
-            {% if current_user in event.attendees.all() %}
+            {% if current_user in event.attendees.all() or event.host  == current_user %}
             <li>Location: <i>{{ event.address }}</i></li>
             {% else %}
             <li>Location: <i>{{ event.coarse_location }}</i></li>
             {% endif %}
-            <li>DateTime: <i>{{ event.time }}</i></li>
+            <li>At: <i>{{ event.time }}</i></li>
             <li>Available tickets: <i>{{event.capacity - event.attendees.count()}}</i></li>
-          </ul>
+          </ul> 
         </div>
       </div>
     </div>
