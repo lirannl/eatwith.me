@@ -2,6 +2,7 @@ import base64
 from crypt import methods
 from datetime import datetime
 from random import Random
+from re import T
 from flask import Blueprint, abort, render_template, request, redirect, url_for
 from .models import Comment, Cuisine, Event, User
 from .forms import MealForm, RegisterForm, CommentForm, DelForm
@@ -11,6 +12,8 @@ from werkzeug.utils import secure_filename
 from flask_login import current_user, login_required
 from website.helpers import b64, get_cuisine, id_to_string, string_to_id
 from typing import Optional
+from wtforms.validators import InputRequired
+from flask_wtf.file import FileRequired
 
 bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder='/meal')
 
@@ -21,7 +24,11 @@ bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder='/meal')
 @login_required
 def create():
     if (request.method != 'POST'):
-        return render_template('event/create.html', form=MealForm())
+        form = MealForm()
+        form.time.validators.extend(InputRequired())
+        form.image.validators.extend(
+            FileRequired(message='Image cannot be empty'))
+        return render_template('event/create.html', form=form, cuisines=Cuisine.query.all())
     time: datetime = datetime.fromisoformat(request.form["time"])
     address: str = request.form["address"]
     coarse_location: str = request.form["coarse_location"]
@@ -44,36 +51,37 @@ def create():
 @bp.route('<id>/update', methods=['GET', 'POST'])
 @login_required
 def update(id: str):
-    if (request.method == 'POST'):
-        time: datetime = datetime.fromisoformat(request.form["time"])
-        address: str = request.form["address"]
-        coarse_location: str = request.form["coarse_location"]
-        description: str = request.form["description"]
-        capacity = int(request.form["capacity"])
-        cuisine = get_cuisine(request.form["cuisine"])
-        ticket_price = float(request.form["ticket_price"])
-        image = request.files["image"]
-        host: User = current_user
-        event = Event(
-            time, address, coarse_location,
-            description, capacity, cuisine,
-            ticket_price, image.stream.read(), host
-        )
+    if (request.method != 'POST'):
+        event: Event = Event.query.get(string_to_id(id))
+        form = MealForm()
+        form.populate_obj(event)
+        return render_template('event/create.html', form=form, event=event, cuisines=Cuisine.query.all())
+    try:
+        time: Optional[datetime] = datetime.fromisoformat(request.form["time"])
+    except ValueError:
+        time = None
+    address: str = request.form["address"]
+    coarse_location: str = request.form["coarse_location"]
+    description: str = request.form["description"]
+    capacity = int(request.form["capacity"])
+    cuisine = get_cuisine(request.form["cuisine"])
+    ticket_price = float(request.form["ticket_price"])
+    image = request.files["image"]
+    host: User = current_user
+    event = Event.query.get(string_to_id(id))
+    if time is not None:
         event.time = time
-        event.address = address
-        event.coarse_location = coarse_location
-        event.description = description
-        event.capacity = capacity
-        event.cuisine = cuisine
-        event.ticket_price = ticket_price
-        if image is not None:
-            event.image = image.stream.read()
-        event.host = host
-        db.session.commit() 
-    form = MealForm()
-    event: Event = Event.query.get(string_to_id(id))
-    form.populate_obj(event)
-    return render_template('event/create.html', form=form, event=event)
+    event.address = address
+    event.coarse_location = coarse_location
+    event.description = description
+    event.capacity = capacity
+    event.cuisine = cuisine
+    event.ticket_price = ticket_price
+    if image.filename != '' :
+        event.image = image.stream.read()
+    event.host = host
+    db.session.commit()
+    return redirect(f"/meal/{id}")
 
 
 @bp.route('/delmeal', methods=['GET', 'POST'])
@@ -143,8 +151,9 @@ def book(id: str):
         return abort(404)
     if (event.capacity - event.attendees.count()) < amount:
         return abort(400)
-    event.attendees.extend([current_user] * amount)
-    db.session.commit()
+    for i in range(amount):
+        event.attendees.extend([current_user])
+        db.session.commit()
     return redirect(request.referrer)
 
 

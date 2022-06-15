@@ -1,11 +1,9 @@
 # import flask - from the package import class
-from flask import Blueprint, Flask, render_template, request
+from ast import literal_eval
+from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from base64 import b32encode
-
-from website.forms import LoginForm
 
 db = SQLAlchemy()
 
@@ -39,7 +37,7 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id: str):
-        return User.query.get(eval(user_id))
+        return User.query.get(literal_eval(user_id))
 
     # importing views module here to avoid circular references
     # a commonly used practice.
@@ -49,7 +47,7 @@ def create_app():
     from . import auth
     app.register_blueprint(auth.bp)
 
-    #create meal import
+    # create meal import
     from . import meal
     app.register_blueprint(meal.bp)
 
