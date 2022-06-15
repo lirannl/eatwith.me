@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from .models import Comment, Cuisine, Event, User
-from .forms import MealForm, RegisterForm, CommentForm
+from .forms import MealForm, RegisterForm, CommentForm,DelForm
 from . import db
 import os
 from werkzeug.utils import secure_filename
@@ -25,17 +25,21 @@ def create():
     if form.validate_on_submit():
         # call the function that checks and returns image
         db_file_path = check_upload_file(form)
-        cuisine = Cuisine.query.where(Cuisine.name.lower() ==
-                                      request.form.cuisine.lower().trim()).first()
+        
+        cuisine = Cuisine.query.where(Cuisine.name ==
+                                      request.form['cuisine'].lower()).first()
         if cuisine is None:
-            db.session.add(Cuisine(name=(request.form.cuisine.lower()).trim()))
+            db.session.add(Cuisine(name=(request.form['cuisine'].lower())))
             # Get the newly created cuisine
-            cuisine = Cuisine.query.where(Cuisine.name.lower() ==
-                                          request.form.cuisine.lower().trim()).first()
-        meal = Event(name=form.name.data, cuisine=cuisine, host=current_user, description=form.description.data,
-                     image=db_file_path)
+            cuisine = Cuisine.query.where(Cuisine.name ==
+                                          request.form['cuisine'].lower()).first()
+
+        meal = Event( cuisine=cuisine, host=current_user, description=str(request.form['description']),time=str(request.form['time']),address=str(request.form['address']),coarse_location=str(request.form['coarse_location']),capacity=int(request.form['capacity']),ticket_price=float(request.form['ticket_price']),image=db_file_path)
+
+
         # add the object to the db session
         db.session.add(meal)
+
         # commit to the database
         db.session.commit()
         print('Successfully created new meal')
@@ -43,6 +47,55 @@ def create():
         return redirect(url_for('meal.create'))
     return render_template('event/create.html', form=form)
 
+@bp.route('/update', methods=['GET', 'POST'])
+@login_required
+def update():
+    print('Method type: ', request.method)
+    form = MealForm()
+    if form.validate_on_submit():
+        # call the function that checks and returns image
+        db_file_path = check_upload_file(form)
+        updatevent = Event.query.where(Event.description ==
+                                      request.form['name'].lower()).first()
+
+        meal = Event( cuisine=cuisine, host=current_user, description=str(request.form['description']),time=str(request.form['time']),address=str(request.form['address']),coarse_location=str(request.form['coarse_location']),capacity=int(request.form['capacity']),ticket_price=float(request.form['ticket_price']),image=db_file_path)
+        # Update the table with updatevent(have to make it an Event class)
+
+        # add the object to the db session
+        db.session.update(meal)
+
+        # commit to the database
+        db.session.commit()
+        print('Successfully updated the meal')
+        # Always end with redirect when form is valid
+        return redirect(url_for('meal.update'))
+    return render_template('event/update.html', form=form)
+
+@bp.route('/delmeal', methods=['GET', 'POST'])
+@login_required
+def delmeal():
+    print('Method type: ', request.method)
+    form = DelForm()
+    if form.validate_on_submit():
+        
+        delevent = Event.query.where(Event.description ==
+                                      request.form['name'].lower()).first()
+        if delevent is not None:
+            pass
+           #drop the row 
+           #db.session.add(eal)
+
+
+
+        # add the object to the db session
+        
+
+        # commit to the database
+        #db.session.commit()
+        print('Successfully deleted meal')
+        # Always end with redirect when form is valid
+        return redirect(url_for('meal.delet'))
+    return render_template('event/delmeal.html', form=form)
 # 1. There should be a page showing all the event and for each 'view detail' it redirect to a page with the end point of event id /<event_id>
 # 2. When user click on update button the event id should be passed into the 'update' end point where we just have to find the event with the matching eventid that we passeed in, and update it using mealform
 
@@ -82,9 +135,9 @@ def check_upload_file(form):
     BASE_PATH = os.path.dirname(__file__)
     # upload file location – directory of this file/static/image
     upload_path = os.path.join(
-        BASE_PATH, 'static\\image', secure_filename(filename))
+        BASE_PATH, 'static\\img', secure_filename(filename))
     # store relative path in DB as image location in HTML is relative
-    db_upload_path = '\\static\\image\\' + secure_filename(filename)
+    db_upload_path = '\\static\\img\\' + secure_filename(filename)
     # save the file and return the db upload path
     fp.save(upload_path)
     return db_upload_path

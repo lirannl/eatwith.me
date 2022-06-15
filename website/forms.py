@@ -55,6 +55,11 @@ class BookForm(FlaskForm):
     ticket = IntegerField('Amount of tickets', validators=[InputRequired()])
     submit = SubmitField("Submit")
 
+class DelForm(FlaskForm):
+        # within the validator make sure the amount is > 0
+    name = StringField('Description of event', validators=[InputRequired()])
+    submit = SubmitField("Submit")
+
     
     # Comment form
 class CommentForm(FlaskForm):
