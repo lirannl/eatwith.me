@@ -20,7 +20,7 @@ def login():
         return render_template("base.html")
     username = request.form["username"]
     password = request.form["password"]
-    user: Optional[User] = User.query.where(User.username == username).first()
+    user: Optional[User] = User.query.filter_by(username=username).first()
     if user is not None and user.check_password(password):
         if not login_user(user):
             return abort(Response("Not authorised to log in", 403))
