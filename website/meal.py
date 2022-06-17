@@ -25,9 +25,9 @@ bp = Blueprint('meal', __name__, url_prefix='/meal', template_folder='/meal')
 def create():
     if (request.method != 'POST'):
         form = MealForm()
-        form.time.validators.extend(InputRequired())
-        form.image.validators.extend(
-            FileRequired(message='Image cannot be empty'))
+        form.time.validators.extend([InputRequired()])
+        form.image.validators.extend([
+            FileRequired(message='Image cannot be empty')])
         return render_template('event/create.html', form=form, cuisines=Cuisine.query.all())
     time: datetime = datetime.fromisoformat(request.form["time"])
     address: str = request.form["address"]
